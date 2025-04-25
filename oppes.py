@@ -132,7 +132,7 @@ if page == 'Geral':
 	st.subheader('Diagrama de dispersão entre as variáveis')
 
 	# Carregar os dados
-	dados = pd.read_csv('bd_oppes2_so_escalas.csv')
+	dados = pd.read_csv('bd_oppes.csv')
 	
 
 	# Seleção das variáveis para os eixos X e Y
@@ -226,16 +226,16 @@ elif page == 'Escala 1':
 	    dados_plot = dataframe.query('Sexo == @categoria')
 
 	    fig, ax = plt.subplots(figsize=(8,6))
-	    ax = sns.barplot(x = 'Cidade', y = 'Escala_1', hue="cor_da_pele", data = dados_plot)
+	    ax = sns.barplot(x = 'cidade', y = 'E1_ameacas', hue="cor_da_pele", data = dados_plot)
 	    ax.set_title(f'Média na escala 1 dos participantes do sexo {categoria} por cidade', fontsize = 16)
-	    ax.set_xlabel('Cidade', fontsize = 12)
+	    ax.set_xlabel('cidade', fontsize = 12)
 	    ax.tick_params(rotation = 20, axis = 'x')
 	    ax.set_ylabel('Média na escala 1', fontsize = 12)
 	  
 	    return fig
 
 	# importando os dados
-	dados = pd.read_csv('bd_oppes2.csv')
+	dados = pd.read_csv('bd_oppes.csv')
 	dados = dados.dropna(subset=['Sexo'])
 
 	st.title('Escala 1\n')
@@ -258,17 +258,18 @@ elif page == 'Escala 1':
 	
 	
 
-	dados = pd.read_csv('bd_oppes2.csv')
+	dados = pd.read_csv('bd_oppes.csv')
 
 	
 
 	# Seleção das variáveis para os eixos X e Y
-	dados = pd.read_csv('bd_oppes2.csv')
-	dados = dados.drop(['Cidade', 'série'], axis=1)
+	dados = pd.read_csv('bd_oppes.csv')
+	dados = dados.drop(['cidade'], axis=1)
+	#dados = dados.drop(['cidade', 'série'], axis=1)
 
 	# Seleção das variáveis para os eixos X e Y
 	x_axis = ('Idade')
-	y_axis = st.selectbox('Selecione a variável a ser incluída no eixo Y', dados.columns[:-1], index = 3)
+	y_axis = st.selectbox('Selecione a variável a ser incluída no eixo Y', dados.columns[:-1], index = 8)
 
 	dados[x_axis] = pd.to_numeric(dados[x_axis], errors='coerce')
 	dados[y_axis] = pd.to_numeric(dados[y_axis], errors='coerce')
@@ -319,23 +320,23 @@ elif page == 'Escala 1':
 
 elif page == 'Escala 2':
 	st.subheader('Situações ameaçadoras nas escolas')
-	dados = pd.read_csv('bd_oppes2.csv')
+	dados = pd.read_csv('bd_oppes.csv')
 
 	plt.style.use("ggplot")
 	plt.figure(figsize = (20, 12))
-	dados["Escala_1"].hist(bins = 40, ec = "k", alpha = .6, color = "royalblue")
+	dados["E1_ameacas"].hist(bins = 40, ec = "k", alpha = .6, color = "royalblue")
 	plt.title("Distribuição dos resultados da Escala 1")
 	plt.xlabel("Valores")
 	plt.ylabel("Contagem")
 
-	indexes = dados[dados["Escala_1"] == 0].index
+	indexes = dados[dados["E1_ameacas"] == 0].index
 	dados = dados.drop(indexes)
-	indexes = dados[dados["Escala_1"] == 0].index
+	indexes = dados[dados["E1_ameacas"] == 0].index
 	dados = dados.drop(indexes)
 
 
-	notas_max = [dados["Escala_1"].max(), dados["Escala_1"].max(), dados["Escala_1"].max(), dados["Escala_1"].max()]
-	notas_min = [dados["Escala_1"].min(), dados["Escala_1"].min(), dados["Escala_1"].min(), dados["Escala_1"].min()]
+	notas_max = [dados["E1_ameacas"].max(), dados["E1_ameacas"].max(), dados["E1_ameacas"].max(), dados["E1_ameacas"].max()]
+	notas_min = [dados["E1_ameacas"].min(), dados["E1_ameacas"].min(), dados["E1_ameacas"].min(), dados["E1_ameacas"].min()]
 
 	plt.figure(figsize = (20, 14))
 	bar_width = .35
@@ -362,9 +363,10 @@ elif page == 'Escala 2':
 	for i, v in enumerate(notas_min):
 	    plt.text(v - 50, i - bar_width, str(v))
 	        
-	plt.yticks(index - bar_width / 2, ("Escala_1", "Escala_2", "Escala_3", "Escala_4"))
+	plt.yticks(index - bar_width / 2, ("E1_ameacas", "E2_situacoes_estresse", "E5_disc_pessoal", "E6_locais"))
 	plt.title("Notas máximas e mínimas em cada escala")
 	plt.legend()
+	plt.show()
 
 
 
@@ -391,16 +393,16 @@ elif page == 'Escala 3':
 	    dados_plot = dataframe.query('Sexo == @categoria')
 
 	    fig, ax = plt.subplots(figsize=(8,6))
-	    ax = sns.barplot(x = 'Cidade', y = 'Escala_1', hue="cor_da_pele", data = dados_plot)
+	    ax = sns.barplot(x = 'cidade', y = 'E1_ameacas', hue="cor_da_pele", data = dados_plot)
 	    ax.set_title(f'Média na escala 1 dos participantes do sexo {categoria} por cidade', fontsize = 16)
-	    ax.set_xlabel('Cidade', fontsize = 12)
+	    ax.set_xlabel('cidade', fontsize = 12)
 	    ax.tick_params(rotation = 20, axis = 'x')
 	    ax.set_ylabel('Média na escala 1', fontsize = 12)
 	  
 	    return fig
 
 	# importando os dados
-	dados = pd.read_csv('bd_oppes2.csv')
+	dados = pd.read_csv('bd_oppes.csv')
 
 	st.title('Análise das tabelas\n')
 	st.write('Médias por escola')
@@ -438,7 +440,7 @@ elif page == 'Escala 3':
 elif page == 'Escala 4':
 	st.subheader('Atitudes das instituições')
 
-	dados = pd.read_csv('bd_oppes2.csv')
+	dados = pd.read_csv('bd_oppes.csv')
 
 	
 
