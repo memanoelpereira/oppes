@@ -36,4 +36,10 @@ tzdata==2025.2
 urllib3==2.4.0
 watchdog==6.0.0
 seaborn== 0.13.2
-
+pandas
+matplotlib.pyplot
+streamlit
+numpy
+plotly.express
+sklearn.linear_model
+plotly.graph_objects
