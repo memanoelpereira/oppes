@@ -45,5 +45,3 @@ pandas
 streamlit
 plotly.express
 sqlalchemy
-pymysql
-plotly.graph_objects
