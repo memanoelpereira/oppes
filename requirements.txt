@@ -36,10 +36,9 @@ tzdata
 urllib3
 watchdog
 pandas
-matplotlib.pyplot
+matplotlib
 streamlit
 numpy
 plotly.express
 plotly.graph_objects
-matplotlib 
 sqlalchemy
