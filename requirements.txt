@@ -41,5 +41,6 @@ matplotlib.pyplot
 streamlit
 numpy
 plotly.express
-sklearn.linear_model
 plotly.graph_objects
+matplotlib 
+sqlalchemy
