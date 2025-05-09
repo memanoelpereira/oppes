@@ -3104,18 +3104,18 @@ else:
 	st.subheader('Dados Textuais')
 
 	cidades = {
-	    "todos os participantes": "rede_semantica_palavras.png",
-	    "Aracaju": "rede_aracaju.png",
-	    "Campos de Brito": "rede_campos_brito.png",
-	    "Canindé do São Francisco": "rede_caninde.png",
-	    "Nossa Senhora do Carmo": "rede_carmo.png",
-	    "Nossa Senhora das Dores": "rede_dores.png",
-	    "Estância": "rede_estancia.png",
-	    "Neópolis": "rede_neopolis.png",
-	    "Porto da Folha": "rede_porto_folha.png",
-	    "Simão Dias": "rede_simao_dias.png"
+	    "de todos os participantes": "rede_semantica_palavras.png",
+	    "dos participantes de Aracaju": "rede_aracaju.png",
+	    "dos participantes de Campos de Brito": "rede_campos_brito.png",
+	    "dos participantes de Canindé do São Francisco": "rede_caninde.png",
+	    "dos participantes de Nossa Senhora do Carmo": "rede_carmo.png",
+	    "dos participantes de Nossa Senhora das Dores": "rede_dores.png",
+	    "dos participantes de Estância": "rede_estancia.png",
+	    "dos participantes de Neópolis": "rede_neopolis.png",
+	    "dos participantes de Porto da Folha": "rede_porto_folha.png",
+	    "dos participantes de Simão Dias": "rede_simao_dias.png"
 	}
 
 	for cidade, imagem in cidades.items():
-	    with st.expander(f"Visualizar as respostas dos participantes de {cidade}"):
-	        st.image(imagem, caption=f"Rede semântica das respostas dos participantes de {cidade} sobre assédio na Internet")
+	    with st.expander(f"Visualizar as respostas {cidade}"):
+	        st.image(imagem, caption=f"Rede semântica das respostas {cidade} sobre assédio na Internet")
