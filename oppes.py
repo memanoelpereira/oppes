@@ -26,7 +26,7 @@ st.image('logo_oppes.png')
 st.header('Resultados do diagnóstico')
 
 st.sidebar.title ('Navegação')
-page = st.sidebar.selectbox('Select a page:',
+page = st.sidebar.selectbox('Selecione uma página:',
 ['Geral', 'Escala 1', 'Escala 2', 'Escalas 3 e 4', 'Escala 5',  'Escala 6', 'Escala 7', 'Escala 8', 'Escala 9', 'Escala 10', 'Escala 11', 'Modelos de regressão', 'Dados Textuais'])
 
 @st.cache_data
@@ -2926,7 +2926,7 @@ elif page == 'Escala 11':
 #--------------modelos de regressão
 #--------------modelos de regressão
 #--------------modelos de regressão
-elif page == 'Escala 11':
+elif page == 'Modelos de regressão':
 
 # Título
 	st.subheader('Regressão Linear Múltipla com Padronização, Outliers e Resultados Originais')
