@@ -12,15 +12,22 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 from scipy.stats import shapiro
 from statsmodels.stats.diagnostic import het_breuschpagan
 from scipy import stats
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+from scipy.stats import shapiro
+from statsmodels.stats.diagnostic import het_breuschpagan
+from scipy import stats
+from statsmodels.formula.api import ols
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+from statsmodels.stats.multicomp import MultiComparison
+import pingouin as pg
 
 
-
-st.title('OPPES\n')
+st.image('logo_oppes.png')
 st.header('Resultados do diagnóstico')
 
 st.sidebar.title ('Navegação')
 page = st.sidebar.selectbox('Select a page:',
-['Geral', 'Escala 1', 'Escala 2', 'Escalas 3 e 4', 'Escala 5',  'Escala 6', 'Escala 7', 'Escala 8', 'Escala 9', 'Escala 10', 'Escala 11', 'Modelos de regressão'])
+['Geral', 'Escala 1', 'Escala 2', 'Escalas 3 e 4', 'Escala 5',  'Escala 6', 'Escala 7', 'Escala 8', 'Escala 9', 'Escala 10', 'Escala 11', 'Modelos de regressão', 'Dados Textuais'])
 
 @st.cache_data
 def load_dados():
@@ -262,12 +269,60 @@ if page == 'Geral':
 
 	st.divider()
 
+#-------- ANOVAS
+	st.markdown(f"## ANOVAs (Comparar diferenças das médias de cada escala entre as cidades)")
+
+
+	st.divider()
+	df = pd.read_csv("bd_oppes.csv")
+
+	# Definir as variáveis
+	variaveis = ['E1_ameacas', 'E2_situacoes_estresse', 'E3_4_agentes', 'E5_disc_pessoal',
+	             'E6_locais', 'E7_soma_pertenca', 'E8_qualid_relacoes', 'E9_trat_desig_grupos',
+	             'E10_est_emoc_neg', 'E11_satisf_vida']
+
+	# Loop para análise
+	for var in variaveis:
+	    with st.expander(f"🔍 Resultados - {var}", expanded=False):
+	        
+	        # Remover valores ausentes
+	        dados_validos = df[[var, 'Cidade']].dropna()
+
+	        # Checkbox e resultado da ANOVA
+	        if st.checkbox(f"Mostrar ANOVA - {var}", value=False):
+	            model = ols(f'{var} ~ C(Cidade)', data=dados_validos).fit()
+	            anova_table = sm.stats.anova_lm(model, typ=2)
+	            st.markdown("**Tabela ANOVA**")
+	            st.dataframe(anova_table)
+
+	        # Checkbox e resultado do teste de Tukey
+	        if st.checkbox(f"Mostrar Teste de Tukey - {var}", value=False):
+	            mc = MultiComparison(dados_validos[var], dados_validos['Cidade'])
+	            tukey_result = mc.tukeyhsd()
+	            tukey_df = pd.DataFrame(data=tukey_result._results_table.data[1:], 
+	                                    columns=tukey_result._results_table.data[0])
+	            st.markdown("**Teste Post Hoc (Tukey HSD)**")
+	            st.dataframe(tukey_df)
+
+	        # Checkbox e gráfico do teste de Tukey
+	        if st.checkbox(f"Mostrar Gráfico de Tukey - {var}", value=False):
+	            mc = MultiComparison(dados_validos[var], dados_validos['Cidade'])
+	            tukey_result = mc.tukeyhsd()
+	            fig = tukey_result.plot_simultaneous()
+	            st.pyplot(fig)
+
+	        # Checkbox e resultado de Games-Howell
+	        if st.checkbox(f"Mostrar Games-Howell - {var}", value=False):
+	            gh_result = pg.pairwise_gameshowell(dv=var, between='Cidade', data=dados_validos)
+	            st.markdown("**Teste Post Hoc (Games-Howell)**")
+	            st.dataframe(gh_result)
+
  #-------------  diagrama de dispersão entre as escalas
 
 	# Subtítulo
 	
 
-	st.subheader('Diagrama de dispersão: Dados Brutos vs. Padronizados')
+	st.subheader('Diagrama de dispersão e regressão linear simples: Dados Brutos vs. Padronizados')
 
 	# Carregamento de dados
 	@st.cache_data
@@ -2871,9 +2926,7 @@ elif page == 'Escala 11':
 #--------------modelos de regressão
 #--------------modelos de regressão
 #--------------modelos de regressão
-
-else: 
-	st.subheader('Modelo de regressão linear')
+elif page == 'Escala 11':
 
 # Título
 	st.subheader('Regressão Linear Múltipla com Padronização, Outliers e Resultados Originais')
@@ -3046,3 +3099,23 @@ else:
 	else:
 	    st.error("Pode haver heterocedasticidade (p < 0.05).")
 
+
+else: 
+	st.subheader('Dados Textuais')
+
+	cidades = {
+	    "todos os participantes": "rede_semantica_palavras.png",
+	    "Aracaju": "rede_aracaju.png",
+	    "Campos de Brito": "rede_campos_brito.png",
+	    "Canindé do São Francisco": "rede_caninde.png",
+	    "Nossa Senhora do Carmo": "rede_carmo.png",
+	    "Nossa Senhora das Dores": "rede_dores.png",
+	    "Estância": "rede_estancia.png",
+	    "Neópolis": "rede_neopolis.png",
+	    "Porto da Folha": "rede_porto_folha.png",
+	    "Simão Dias": "rede_simao_dias.png"
+	}
+
+	for cidade, imagem in cidades.items():
+	    with st.expander(f"Visualizar as respostas dos participantes de {cidade}"):
+	        st.image(imagem, caption=f"Rede semântica das respostas dos participantes de {cidade} sobre assédio na Internet")
