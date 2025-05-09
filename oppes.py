@@ -56,7 +56,7 @@ if page == 'Geral':
 	st.subheader('Modelo de relações entre as variáveis')
 
 	descricoes = {
-	    'E1_ameacas': 'Frequência de exposição a ameaças no ambiente escolar.',
+	    'E1_ameacas': 'Sentimento de não-pertencimento ao ambiente escolar.',
 	    'E2_situacoes_estresse': 'Número de situações estressantes enfrentadas.',
 	    'E3_4_agentes': 'Ação dos professores e da escola.',
 	    'E5_disc_pessoal': 'Qualidade da disciplina pessoal observada.',
@@ -447,7 +447,7 @@ if page == 'Geral':
 # ----------------------------Escala 1-----------------------------------------------
 
 elif page == 'Escala 1':
-	st.subheader('Ameaças nas escolas')
+	st.subheader('Sentimento de não-pertencimento ao ambiente escolar')
 
 	dados = pd.read_csv('bd_oppes.csv')
 	#dados = load_dados()
@@ -694,7 +694,7 @@ elif page == 'Escala 1':
 # ----------------------------Escala 2-----------------------------------------------
 
 elif page == 'Escala 2':
-	st.subheader('Situações ameaçadoras nas escolas')
+	st.subheader('Situações estressantes nas escolas')
 
 	med_e2 = dados['E2_situacoes_estresse'].mean()
 	med_e2_1 = dados['Escala_2_1'].mean()
