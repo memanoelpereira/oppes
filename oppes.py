@@ -458,7 +458,7 @@ elif page == 'Escala 1':
 
 	st.divider()
 	st.subheader('Sentimento de pertencimento ao ambiente escolar')
-	st.image("q1.png")
+	
 
 	st.markdown(f'**Média geral computada para a medida de pertencimento ao ambiente escolar: {med_e1:.3f}**')
 
@@ -466,6 +466,8 @@ elif page == 'Escala 1':
 
 
 	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 1", key="med_E1"):
+		st.image("q1.png")
+		st.markdown(f'**Média geral computada para a medida de pertencimento ao ambiente escolar: {med_e1:.3f}**')
 		st.write(f'1 = {med_e1_1:.3f} (Na minha escola há muitas brigas e desentendimentos entre os alunos(as)).')
 		st.write(f'2 = {med_e1_2:.3f} (Estou satisfeito com a relação que tenho com meus colegas, na minha escola.)')
 		st.write(f'3 = {med_e1_3:.3f} (A minha escola é um lugar onde me sinto excluído(a).)')
@@ -718,14 +720,14 @@ elif page == 'Escala 2':
 
 	st.divider()
 	st.subheader('Média de situações estressantes ocorridas na escola')
-	st.image("q2.png")
 	st.markdown(f'**Média geral das situações ocasionadas pelos alunos: {med_e2a:.3f}**')
 	st.markdown(f'**Média geral das situações ocasionadas pelo contexto escolar: {med_e2e:.3f}**')
 
 	st.divider()
 	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 2", key="med_E1"):
+		st.image("q2.png")
+		st.markdown(f'**Média geral das situações ocasionadas pelos alunos: {med_e2a:.3f}**')
 
-		st.markdown(f'**Média geral das situações ocasionadas pelos alunos**')
 		st.write(f'1 = {med_e2_1:.3f} (Os(as) alunos(as) desrespeitam os(as) professores(as).)')
 		st.write(f'3 = {med_e2_3:.3f} (0s (as) alunos(as) ofendem ou ameaçam alguns professores.)')
 		st.write(f'9 = {med_e2_9:.3f} (Alguns alunos(as) vêm para a escola após usar bebidas alcoólicas ou outras drogas.)')
@@ -733,7 +735,7 @@ elif page == 'Escala 2':
 		st.write(f'11 = {med_e2_11:.3f} (Alguns alunos(as) trazem facas, canivetes, estiletes etc., como armas para a escola.)')
 		
 
-		st.markdown(f'**Média geral das situações ocasionadas pelo contexto escolar**')
+		st.markdown(f'**Média geral das situações ocasionadas pelo contexto escolar: {med_e2e:.3f}**')
 		st.write(f'2 = {med_e2_2:.3f} (Os(as) funcionários tratam todos os (as)alunos(as) com respeito.)')
 		st.write(f'4 = {med_e2_4:.3f} (Os(as) professores escutam o que os alunos têm a dizer.)')
 		st.write(f'5 = {med_e2_5:.3f} (Os(as) professores implicam com alguns alunos.)')
@@ -748,7 +750,7 @@ elif page == 'Escala 2':
 	
 
 	st.divider()
-	st.subheader('Média das situações ocasionadas por estudantes, por cidade, sexo e cor da pele')   
+	st.subheader('Média das situações ocasionadas pelos alunos, por cidade, sexo e cor da pele')   
 
 
 # Calcular média
