@@ -31,14 +31,14 @@ page = st.sidebar.selectbox('Selecione uma página:',
 
 @st.cache_data
 def load_dados():
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	return dados
 
 # usar o cache
 dados = load_dados()
 
 # limpar colunas sem uso
-dados = dados.drop(['Concorda', 'DRs', 'etapa'], axis=1)
+dados = dados.drop(['Concorda', 'DRs', 'etapa', 'Violenc_escolas'], axis=1)
 
 #st.write(dados)
 
@@ -56,16 +56,22 @@ if page == 'Geral':
 	st.subheader('Modelo de relações entre as variáveis')
 
 	descricoes = {
-	    'E1_ameacas': 'Sentimento de não-pertencimento ao ambiente escolar.',
-	    'E2_situacoes_estresse': 'Número de situações estressantes enfrentadas.',
-	    'E3_4_agentes': 'Ação dos professores e da escola.',
-	    'E5_disc_pessoal': 'Qualidade da disciplina pessoal observada.',
-	    'E6_locais': 'Avaliação da segurança e conforto dos locais da escola.',
-	    'E7_soma_pertenca': 'Soma dos grupos de pertencimento.',
-	    'E8_qualid_relacoes': 'Qualidade das relações entre os grupos.',
-	    'E9_trat_desig_grupos': 'Tratamento desigual entre os grupos.',
-	    'E10_est_emoc_neg': 'Estados emocionais negativos.',
-	    'E11_satisf_vida': 'Satisfação com a vida.'
+	    'esc1_Pertencimento': 'Sentimento de pertencimento ao ambiente escolar.',
+	    'esc2_sit_alunos': 'Situações estressantes relacionadas aos colegas.',
+	    'esc2_sit_escola': 'Situações estressantes relacionadas ao ambiente escolar.',
+	    'esc3_4_conflitos': 'Ação dos professores e da escola frente aos conflitos.',
+	    'esc5_bull_alvo': 'Alvo bulling no ambiente escolar.',
+	    'esc5_bull_agente': 'Praticou bulling no ambiente escolar.',
+	    'esc5_bull_teste': 'Testemunhou bulling no ambiente escolar.',
+	    'esc6_loc_agr_esc': 'Agressões sofridas no ambiente escolar.',
+	    'esc6_loc_agr_imed': 'Agressões sofridas nas imediações da escola.',
+	    'esc6_loc_agr_internet': 'Agressões sofridas na internet.',
+	    'esc7_soma_pert': 'Soma dos grupos de pertencimento.',
+	    'esc7_grup_estig': 'Proporção de grupos estigmatizados que pertence.',
+	    'esc8_rel_intergrup': 'Qualidade das relações entre os grupos no ambiente escolar.',
+	    'esc9_inc_diversid': 'Reconhece relações positivas entre os grupos.',
+	    'esc10_est_emoc_neg': 'Medida de estados emocionais negativos.',
+	    'esc11_satisf_vida': 'Medida de satisfação com a vida.'
 
 	}
 
@@ -85,15 +91,15 @@ if page == 'Geral':
 
 	dados = load_dados()
 
-	media = dados['E1_ameacas'].mean()
+	media = dados['esc1_Pertencimento'].mean()
 	st.markdown(f'**Média geral: {media:.3f}**')
 
 	# Calcular a avaliação média por cidade
-	media_esc = dados.groupby("Cidade")[["E1_ameacas"]].mean().reset_index()
+	media_esc = dados.groupby("Cidade")[["esc1_Pertencimento"]].mean().reset_index()
 
 	# Criar o gráfico de barras para exibir a avaliação média
-	fig_media_esc = px.bar(media_esc, y="E1_ameacas", x="Cidade",
-	title="Escala 1 : Sentimento de não-pertença, por cidade")
+	fig_media_esc = px.bar(media_esc, y="esc1_Pertencimento", x="Cidade",
+	title="Escala 1 : Sentimento de pertencimento ao ambiente escolar, por cidade")
 
 	
 
@@ -103,7 +109,7 @@ if page == 'Geral':
 
 
 	
-	dados_agrupados = dados.groupby('Cidade').agg({'E1_ameacas':'mean'})
+	dados_agrupados = dados.groupby('Cidade').agg({'esc1_Pertencimento':'mean'})
 
 
 	if st.checkbox ("Marque aqui para visualizar as médias, por cidade"):
@@ -120,21 +126,21 @@ if page == 'Geral':
 
 	st.subheader('Efeitos instituiçoes: média em cada escala, por cidade')
 
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	
 	dados = load_dados()
 	
 
 # Calcular a média das variáveis por cidade
-	dados_agrupados_inst = dados.groupby('Cidade')[['E2_situacoes_estresse', 'E3_4_agentes', 'E6_locais']].mean().round(3)
+	dados_agrupados_inst = dados.groupby('Cidade')[['esc2_sit_alunos', 'esc2_sit_escola', 'esc3_4_conflitos', 'esc6_loc_agr_esc', 'esc6_loc_agr_imed', 'esc6_loc_agr_internet' ]].mean().round(3)
 
 # Transformar os dados para o formato longo
 	med_inst_long = pd.melt(dados_agrupados_inst.reset_index(), 
                        id_vars=['Cidade'], 
-                       value_vars=['E2_situacoes_estresse', 'E3_4_agentes', 'E6_locais'], 
+                       value_vars=['esc2_sit_alunos', 'esc2_sit_escola', 'esc3_4_conflitos', 'esc6_loc_agr_esc', 'esc6_loc_agr_imed', 'esc6_loc_agr_internet' ], 
                        var_name='Tipo', 
                        value_name='Valor')
-	media_geral_inst = dados[['E2_situacoes_estresse', 'E3_4_agentes', 'E6_locais']].mean()
+	media_geral_inst = dados[['esc2_sit_alunos', 'esc2_sit_escola', 'esc3_4_conflitos', 'esc6_loc_agr_esc', 'esc6_loc_agr_imed', 'esc6_loc_agr_internet']].mean()
 
 	st.markdown(f'**Média Geral: {media_geral_inst.iloc[0]:.3f}**')
 
@@ -144,11 +150,11 @@ if page == 'Geral':
                         x="Cidade", 
                         y="Valor", 
                         color="Tipo",  # Diferenciar pelas diferentes variáveis
-                        title="Média das Escalas 2, 3 e 6: Ameaças Institucionais: Professores, Escola e Locais",
+                        title="Média das Escalas  de Ameaças Institucionais: Professores, Escola e Locais",
                         labels={"Valor": "Média do Valor", "Cidade": "Cidade"})  # Ajustando os rótulos
 
 
-	dados_agrupados_inst = dados.groupby('Cidade')[['E2_situacoes_estresse', 'E3_4_agentes', 'E6_locais']].mean().round(3)
+	dados_agrupados_inst = dados.groupby('Cidade')[['esc2_sit_alunos', 'esc2_sit_escola', 'esc3_4_conflitos', 'esc6_loc_agr_esc', 'esc6_loc_agr_imed', 'esc6_loc_agr_internet']].mean().round(3)
 	if st.checkbox ("Marque aqui para visualizar as médias, por cidade", key="med_inst"):
 		st.write(dados_agrupados_inst)
 
@@ -164,18 +170,18 @@ if page == 'Geral':
     
 	st.divider()
 	st.subheader('Soma dos grupos de pertencimento: média em cada escala, por cidade')
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = load_dados()
 	
-	media_pert = dados['E7_soma_pertenca'].mean()
+	media_pert = dados['esc7_soma_pert'].mean()
 	st.markdown(f'**Média geral: {media_pert:.3f}**')
 
 	# Calcular a avaliação média por cidade
-	media_pert = dados.groupby("Cidade")[["E7_soma_pertenca"]].mean().reset_index()
+	media_pert = dados.groupby("Cidade")[["esc7_soma_pert"]].mean().reset_index()
 
 	# Criar o gráfico de barras para exibir a avaliação média
-	fig_media_pert = px.bar(media_pert, y="E7_soma_pertenca", x="Cidade",
-	title="Escala 1 : Média do número de grupos de pertencimento, por cidade")
+	fig_media_pert = px.bar(media_pert, y="esc7_soma_pert", x="Cidade",
+	title="Escala 1 : Soma do número de grupos de pertencimento, por cidade")
 
 	if st.checkbox ("Marque aqui para visualizar as médias, por cidade", key="med_pert"):
 		st.write(media_pert)
@@ -189,42 +195,28 @@ if page == 'Geral':
 
 	st.divider()
 
-	st.subheader('Efeito grupais: média em cada escala, por cidade')
+	st.subheader('Qualidade das relações intergrupais, por cidade')
 
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	
 	dados = load_dados()
 	
 
-# Calcular a média das variáveis por cidade
-	dados_agrupados_grup = dados.groupby('Cidade')[['E8_qualid_relacoes', 'E9_trat_desig_grupos']].mean().round(3)
+	media_pert = dados['esc7_soma_pert'].mean()
+	st.markdown(f'**Média geral: {media_pert:.3f}**')
 
-# Transformar os dados para o formato longo
-	med_grup_long = pd.melt(dados_agrupados_grup.reset_index(), 
-                       id_vars=['Cidade'], 
-                       value_vars=['E8_qualid_relacoes', 'E9_trat_desig_grupos'], 
-                       var_name='Tipo', 
-                       value_name='Valor')
+	# Calcular a avaliação média por cidade
+	media_pert = dados.groupby("Cidade")[["esc8_rel_intergrup"]].mean().reset_index()
 
-	
-	media_grup = dados['E8_9_grupal'].mean()
-	st.markdown(f'**Média geral: {media_grup:.3f}**')
+	# Criar o gráfico de barras para exibir a avaliação média
+	fig_media_pert = px.bar(media_pert, y="esc8_rel_intergrup", x="Cidade",
+	title="Escala 1 : Qualidade das relações intergrupais, por cidade")
 
-# Criar o gráfico de barras
-	fig_media_grup = px.bar(med_grup_long, 
-                        x="Cidade", 
-                        y="Valor", 
-                        color="Tipo",  # Diferenciar pelas diferentes variáveis
-                        title="Média das Escalas 8 e 9: Ameaças grupais: Qualidade das relaçẽos intergrupais e tratamento desigual entre os grupos",
-                        labels={"Valor": "Média do Valor", "Cidade": "Cidade"})  # Ajustando os rótulos
+	if st.checkbox ("Marque aqui para visualizar as médias, por cidade", key="soma_pert"):
+		st.write(media_pert)
 
-
-	dados_agrupados_grup = dados.groupby('Cidade')[['E8_qualid_relacoes', 'E9_trat_desig_grupos']].mean().round(3)
-	if st.checkbox ("Marque aqui para visualizar as médias, por cidade", key="med_grup"):
-		st.write(dados_agrupados_grup)
-
-	if st.checkbox ("Marque aqui para visualizar o gráfico das médias, por cidade", key="graf_grup"):
-		st.plotly_chart(fig_media_grup, use_container_width=True)
+	if st.checkbox ("Marque aqui para visualizar o gráfico das médias, por cidade", key="grafi_pert"):
+		st.plotly_chart(fig_media_pert)
 	
 
 
@@ -233,18 +225,18 @@ if page == 'Geral':
 	st.divider()
 	st.subheader('Efeitos individuais: média em cada escala, por cidade')
 
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	
 	dados = load_dados()
 	
 
 # Calcular a média das variáveis por cidade
-	dados_agrupados_ind = dados.groupby('Cidade')[['E5_disc_pessoal', 'E10_est_emoc_neg', 'E11_satisf_vida']].mean().round(3)
+	dados_agrupados_ind = dados.groupby('Cidade')[['esc5_bull_alvo', 'esc5_bull_alvo', 'esc5_bull_testem', 'esc10_est_emoc_neg', 'esc11_satisf_vida']].mean().round(3)
 
 # Transformar os dados para o formato longo
 	med_ind_long = pd.melt(dados_agrupados_ind.reset_index(), 
                        id_vars=['Cidade'], 
-                       value_vars=['E5_disc_pessoal', 'E10_est_emoc_neg', 'E11_satisf_vida'], 
+                       value_vars=['esc5_bull_alvo', 'esc5_bull_alvo', 'esc5_bull_testem', 'esc10_est_emoc_neg', 'esc11_satisf_vida'], 
                        var_name='Tipo', 
                        value_name='Valor')
 
@@ -256,11 +248,11 @@ if page == 'Geral':
                         x="Cidade", 
                         y="Valor", 
                         color="Tipo",  # Diferenciar pelas diferentes variáveis
-                        title="Média das Escalas 5, 10 e 11: Ameaças Individuais: Ter pessoalmente sido objeto de discriminação, Estados emocionais negativos e Satisfação com a vida",
+                        title="Média das Ameaças Individuais: Bulling, Estados emocionais negativos e Satisfação com a vida",
                         labels={"Valor": "Média do Valor", "Cidade": "Cidade"})  # Ajustando os rótulos
 
 
-	dados_agrupados_ind = dados.groupby('Cidade')[['E5_disc_pessoal', 'E10_est_emoc_neg', 'E11_satisf_vida']].mean().round(3)
+	dados_agrupados_ind = dados.groupby('Cidade')[['esc5_bull_alvo', 'esc5_bull_alvo', 'esc5_bull_testem', 'esc10_est_emoc_neg', 'esc11_satisf_vida']].mean().round(3)
 	if st.checkbox ("Marque aqui para visualizar as médias, por cidade", key="med_ind"):
 		st.write(dados_agrupados_ind)
 
@@ -274,12 +266,13 @@ if page == 'Geral':
 
 
 	st.divider()
-	df = pd.read_csv("bd_oppes.csv")
+	df = pd.read_csv("oppes_versao2.csv")
 
 	# Definir as variáveis
-	variaveis = ['E1_ameacas', 'E2_situacoes_estresse', 'E3_4_agentes', 'E5_disc_pessoal',
-	             'E6_locais', 'E7_soma_pertenca', 'E8_qualid_relacoes', 'E9_trat_desig_grupos',
-	             'E10_est_emoc_neg', 'E11_satisf_vida']
+	variaveis = ['esc1_Pertencimento', 'esc2_sit_alunos', 'esc2_sit_escola', 'esc3_4_conflitos', 'esc5_bull_alvo',
+	             'esc5_bull_agente', 'esc5_bull_testem', 'esc6_loc_agr_esc', 'esc6_loc_agr_imed', 'esc6_loc_agr_internet', 
+	             'esc7_soma_pert', 'esc7_grup_estig',  'esc8_rel_intergrup', 'esc9_inc_diversid',
+	             'esc10_est_emoc_neg', 'esc11_satisf_vida']
 
 	# Loop para análise
 	for var in variaveis:
@@ -327,16 +320,16 @@ if page == 'Geral':
 	# Carregamento de dados
 	@st.cache_data
 	def load_dados():
-	    return pd.read_csv("bd_oppes.csv")
+	    return pd.read_csv("oppes_versao2.csv")
 
 	dados = load_dados()
 
 	# Colunas numéricas de interesse
 	colunas_escalas = [
-	    'E1_ameacas', 'E2_situacoes_estresse', 'E3_4_agentes',
-	    'E5_disc_pessoal', 'E6_locais', 'E7_soma_pertenca',
-	    'E8_qualid_relacoes', 'E9_trat_desig_grupos',
-	    'E10_est_emoc_neg', 'E11_satisf_vida'
+	    'esc1_Pertencimento', 'esc2_sit_alunos', 'esc2_sit_escola', 'esc3_4_conflitos', 'esc5_bull_alvo',
+	    'esc5_bull_agente', 'esc5_bull_testem', 'esc6_loc_agr_esc', 'esc6_loc_agr_imed', 'esc6_loc_agr_internet', 
+	    'esc7_soma_pert', 'esc7_grup_estig',  'esc8_rel_intergrup', 'esc9_inc_diversid',
+	    'esc10_est_emoc_neg', 'esc11_satisf_vida'
 	]
 
 	# Função para remover outliers com IQR
@@ -447,26 +440,29 @@ if page == 'Geral':
 # ----------------------------Escala 1-----------------------------------------------
 
 elif page == 'Escala 1':
-	st.subheader('Sentimento de não-pertencimento ao ambiente escolar')
-
-	dados = pd.read_csv('bd_oppes.csv')
+	
+	dados = pd.read_csv('oppes_versao2.csv')
 	#dados = load_dados()
 
-	med_e1 = dados['E1_ameacas'].mean()
-	med_e1_1 = dados['Escala_1_1'].mean()
-	med_e1_2 = dados['Escala_1_2'].mean()
-	med_e1_3 = dados['Escala_1_3'].mean()
-	med_e1_4 = dados['Escala_1_4'].mean()
-	med_e1_5 = dados['Escala_1_5'].mean()
-	med_e1_6 = dados['Escala_1_6'].mean()
-	med_e1_7 = dados['Escala_1_7'].mean()
-	med_e1_8 = dados['Escala_1_8'].mean()
-	med_e1_9 = dados['Escala_1_9'].mean()
+	med_e1 = dados['esc1_Pertencimento'].mean()
+	med_e1_1 = dados['esc1_1'].mean()
+	med_e1_2 = dados['esc_1_2'].mean()
+	med_e1_3 = dados['esc_1_3'].mean()
+	med_e1_4 = dados['esc_1_4'].mean()
+	med_e1_5 = dados['esc_1_5'].mean()
+	med_e1_6 = dados['esc_1_6'].mean()
+	med_e1_7 = dados['esc_1_7'].mean()
+	med_e1_8 = dados['esc_1_8'].mean()
+	med_e1_9 = dados['esc_1_9'].mean()
 
-	st.markdown(f'**Média geral: {med_e1:.3f}**')
 
 	st.divider()
-	st.subheader('Média de cada item da escala')
+	st.subheader('Sentimento de pertencimento ao ambiente escolar')
+	st.image("q1.png")
+
+	st.markdown(f'**Média geral computada para a medida de pertencimento ao ambiente escolar: {med_e1:.3f}**')
+
+	st.subheader('Média obtida em cada item da escala')
 
 
 	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 1", key="med_E1"):
@@ -481,13 +477,13 @@ elif page == 'Escala 1':
 		st.write(f'9 = {med_e1_9:.3f} (Se eu pudesse, eu mudaria de escola.)')
 
 	st.divider()
-	st.subheader('Média da escala, por cidade, sexo e cor da pele')   
+	st.subheader('Média de pertencimento à escola, por cidade, sexo e cor da pele')   
 
 
 # Calcular média por cidade, sexo e cor da pele
 
 # Calcular média
-	media_E1_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E1_ameacas'].mean().reset_index()
+	media_E1_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc1_Pertencimento'].mean().reset_index()
 	media_E1_por_cidade_sexo['Sexo_Cor'] = media_E1_por_cidade_sexo['Sexo'] + " - " + media_E1_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -512,7 +508,7 @@ elif page == 'Escala 1':
 	   
 
 	# 🧮 Agrupamento e preparação dos dados
-	media_E1_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E1_ameacas'].mean().reset_index()
+	media_E1_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc1_Pertencimento'].mean().reset_index()
 	media_E1_por_cidade_sexo['Sexo_Cor'] = media_E1_por_cidade_sexo['Sexo'] + " - " + media_E1_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -541,19 +537,19 @@ elif page == 'Escala 1':
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
 	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["E1_ameacas"].mean()
+	        media_geral = df_filtrado["esc1_Pertencimento"].mean()
 
 	        fig_media_E1 = px.bar(
 	            df_filtrado,
 	            x="Cidade",
-	            y="E1_ameacas",
+	            y="esc1_Pertencimento",
 	            color="Sexo_Cor",
 	            barmode="group",
-	            text=df_filtrado["E1_ameacas"].round(2),
-	            title="Escala 1: Média de Ameaças por Cidade, Sexo e Cor da Pele",
+	            text=df_filtrado["esc1_Pertencimento"].round(2),
+	            title="Escala 1: Média de pertencimento ao ambiente escolar, por cidade, sexo e cor da Pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "E1_ameacas": "Média de Ameaças",
+	                "esc1_Pertencimento": "Média de Pertencimento",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -617,19 +613,19 @@ elif page == 'Escala 1':
 	                st.rerun()
 
 	st.divider()
-	st.subheader('Diagrama de dispersão entre a variável idade, a escala selecionada e as variáveis cor da pele e o sexo do participante.')
+	st.subheader('Diagrama de dispersão entre a variável idade, a escala de pertencimento e as variáveis cor da pele e o sexo do participante.')
 	
 
 	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = dados.drop(['Cidade'], axis=1)
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E1 = [
-	    'E1_ameacas', 'Escala_1_1', 'Escala_1_2',
-	    'Escala_1_3', 'Escala_1_4', 'Escala_1_5',
-	    'Escala_1_6', 'Escala_1_7', 
-	    'Escala_1_8', 'Escala_1_9'
+	    'esc1_Pertencimento', 'esc1_1', 'esc_1_2',
+	    'esc_1_3', 'esc_1_4', 'esc_1_5',
+	    'esc_1_6', 'esc_1_7', 
+	    'esc_1_8', 'esc_1_9'
 	]
 	if st.checkbox ("Marque aqui para selecionar as variáveis e visualizar os resultados ", key="graf_reg_esc2"):
 		# === Interface de seleção ===
@@ -696,42 +692,54 @@ elif page == 'Escala 1':
 elif page == 'Escala 2':
 	st.subheader('Situações estressantes nas escolas')
 
-	med_e2 = dados['E2_situacoes_estresse'].mean()
+	st.write('Situações ocasionadas pelos estudantes e pelo contexto escolar')
+
+	med_e2a = dados['esc2_sit_alunos'].mean()
 	med_e2_1 = dados['Escala_2_1'].mean()
-	med_e2_2 = dados['Escala_2_2'].mean()
 	med_e2_3 = dados['Escala_2_3'].mean()
+	med_e2_9 = dados['Escala_2_9'].mean()
+	med_e2_10 = dados['Escala_2_10'].mean()
+	med_e2_11 = dados['Escala_2_11'].mean()
+
+	med_e2e = dados['esc2_sit_escola'].mean()
+	med_e2_2 = dados['Escala_2_2'].mean()
 	med_e2_4 = dados['Escala_2_4'].mean()
 	med_e2_5 = dados['Escala_2_5'].mean()
 	med_e2_6 = dados['Escala_2_6'].mean()
 	med_e2_7 = dados['Escala_2_7'].mean()
 	med_e2_8 = dados['Escala_2_8'].mean()
-	med_e2_9 = dados['Escala_2_9'].mean()
-	med_e2_10 = dados['Escala_2_10'].mean()
-	med_e2_11 = dados['Escala_2_11'].mean()
 	med_e2_12 = dados['Escala_2_12'].mean()
 	med_e2_13 = dados['Escala_2_13'].mean()
 	med_e2_14 = dados['Escala_2_14'].mean()
 	med_e2_15 = dados['Escala_2_15'].mean()
 	med_e2_16 = dados['Escala_2_16'].mean()
 	
-	st.markdown(f'**Média geral: {med_e2:.3f}**')
+	
 
 	st.divider()
-	st.subheader('Média de cada item da escala')
+	st.subheader('Média de situações estressantes ocorridas na escola')
+	st.image("q2.png")
+	st.markdown(f'**Média geral das situações ocasionadas pelos alunos: {med_e2a:.3f}**')
+	st.markdown(f'**Média geral das situações ocasionadas pelo contexto escolar: {med_e2e:.3f}**')
 
+	st.divider()
+	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 2", key="med_E1"):
 
-	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 1", key="med_E1"):
+		st.markdown(f'**Média geral das situações ocasionadas pelos alunos**')
 		st.write(f'1 = {med_e2_1:.3f} (Os(as) alunos(as) desrespeitam os(as) professores(as).)')
-		st.write(f'2 = {med_e2_2:.3f} (Os(as) funcionários tratam todos os (as)alunos(as) com respeito.)')
 		st.write(f'3 = {med_e2_3:.3f} (0s (as) alunos(as) ofendem ou ameaçam alguns professores.)')
+		st.write(f'9 = {med_e2_9:.3f} (Alguns alunos(as) vêm para a escola após usar bebidas alcoólicas ou outras drogas.)')
+		st.write(f'10 = {med_e2_10:.3f} (Alguns alunos (as) vendem drogas dentro da escola.)')
+		st.write(f'11 = {med_e2_11:.3f} (Alguns alunos(as) trazem facas, canivetes, estiletes etc., como armas para a escola.)')
+		
+
+		st.markdown(f'**Média geral das situações ocasionadas pelo contexto escolar**')
+		st.write(f'2 = {med_e2_2:.3f} (Os(as) funcionários tratam todos os (as)alunos(as) com respeito.)')
 		st.write(f'4 = {med_e2_4:.3f} (Os(as) professores escutam o que os alunos têm a dizer.)')
 		st.write(f'5 = {med_e2_5:.3f} (Os(as) professores implicam com alguns alunos.)')
 		st.write(f'6 = {med_e2_6:.3f} (Os(as) professores ameaçam alguns alunos.)')
 		st.write(f'7 = {med_e2_7:.3f} (Os(as) professores tiram sarro ou humilham alguns alunos.)')
-		st.write(f'8 = {med_e2_8:.3f} (Os(as) professores conversam com os alunos sobre problemas de convivência.)')
-		st.write(f'9 = {med_e2_9:.3f} (Alguns alunos(as) vêm para a escola após usar bebidas alcoólicas ou outras drogas.)')
-		st.write(f'10 = {med_e2_10:.3f} (Alguns alunos (as) vendem drogas dentro da escola.)')
-		st.write(f'11 = {med_e2_11:.3f} (Alguns alunos(as) trazem facas, canivetes, estiletes etc., como armas para a escola.)')
+		st.write(f'8 = {med_e2_8:.3f} (Os(as) professores conversam com os alunos sobre problemas de convivência.)')	
 		st.write(f'12 = {med_e2_12:.3f} (Os(as) professores têm alunos favoritos.)')
 		st.write(f'13 = {med_e2_13:.3f} (Na maior parte das vezes, a escola pune ou dá bronca no grupo todo e não apenas nos envolvidos nas confusões.)')
 		st.write(f'14 = {med_e2_14:.3f} (As punições são impostas sem o(a) aluno(a) ser ouvido(a).)')
@@ -740,19 +748,17 @@ elif page == 'Escala 2':
 	
 
 	st.divider()
-	st.subheader('Média da escala, por cidade, sexo e cor da pele')   
+	st.subheader('Média das situações ocasionadas por estudantes, por cidade, sexo e cor da pele')   
 
-
-# Calcular média por cidade, sexo e cor da pele
 
 # Calcular média
-	media_E2_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E2_situacoes_estresse'].mean().reset_index()
-	media_E2_por_cidade_sexo['Sexo_Cor'] = media_E2_por_cidade_sexo['Sexo'] + " - " + media_E2_por_cidade_sexo['Cor_da_pele']
+	media_E2a_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc2_sit_alunos'].mean().reset_index()
+	media_E2a_por_cidade_sexo['Sexo_Cor'] = media_E2a_por_cidade_sexo['Sexo'] + " - " + media_E2a_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
-	cidades = media_E2_por_cidade_sexo["Cidade"].unique()
-	sexos = media_E2_por_cidade_sexo["Sexo"].unique()
-	cores_pele = media_E2_por_cidade_sexo["Cor_da_pele"].unique()
+	cidades = media_E2a_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E2a_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E2a_por_cidade_sexo["Cor_da_pele"].unique()
 
 	# Inicializar session_state
 	if "cidade_selecionada" not in st.session_state:
@@ -763,21 +769,21 @@ elif page == 'Escala 2':
 	    st.session_state["cor_selecionada"] = list(cores_pele)
 
 	# Aplicar filtros baseados no estado
-	df_filtrado = media_E2_por_cidade_sexo[
-	    media_E2_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
-	    media_E2_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
-	    media_E2_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	df_filtradoa = media_E2a_por_cidade_sexo[
+	    media_E2a_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E2a_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E2a_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
 	].copy()
 	   
 
 	# 🧮 Agrupamento e preparação dos dados
-	media_E2_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E2_situacoes_estresse'].mean().reset_index()
-	media_E2_por_cidade_sexo['Sexo_Cor'] = media_E2_por_cidade_sexo['Sexo'] + " - " + media_E2_por_cidade_sexo['Cor_da_pele']
+	media_E2a_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc2_sit_alunos'].mean().reset_index()
+	media_E2a_por_cidade_sexo['Sexo_Cor'] = media_E2a_por_cidade_sexo['Sexo'] + " - " + media_E2a_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
-	cidades = media_E2_por_cidade_sexo["Cidade"].unique()
-	sexos = media_E2_por_cidade_sexo["Sexo"].unique()
-	cores_pele = media_E2_por_cidade_sexo["Cor_da_pele"].unique()
+	cidades = media_E2a_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E2a_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E2a_por_cidade_sexo["Cor_da_pele"].unique()
 
 	# Inicializar session_state
 	if "cidade_selecionada" not in st.session_state:
@@ -788,57 +794,57 @@ elif page == 'Escala 2':
 	    st.session_state["cor_selecionada"] = list(cores_pele)
 
 	# Aplicar filtros
-	df_filtrado = media_E2_por_cidade_sexo[
-	    media_E2_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
-	    media_E2_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
-	    media_E2_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	df_filtradoa = media_E2a_por_cidade_sexo[
+	    media_E2a_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E2a_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E2a_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
 	].copy()
 
 	# Mostrar gráfico (opcional)
-	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E2_csc"):
-	    if df_filtrado.empty:
+	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E2_sita"):
+	    if df_filtradoa.empty:
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
-	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["E2_situacoes_estresse"].mean()
+	        df_filtradoa["Sexo_Cor"] = df_filtradoa["Sexo"] + " - " + df_filtradoa["Cor_da_pele"]
+	        media_gerala = df_filtradoa["esc2_sit_alunos"].mean()
 
-	        fig_media_E2 = px.bar(
-	            df_filtrado,
+	        fig_media_E2a = px.bar(
+	            df_filtradoa,
 	            x="Cidade",
-	            y="E2_situacoes_estresse",
+	            y="esc2_sit_alunos",
 	            color="Sexo_Cor",
 	            barmode="group",
-	            text=df_filtrado["E2_situacoes_estresse"].round(2),
-	            title="Escala 2: Média de Situações de estresse por Cidade, Sexo e Cor da Pele",
+	            text=df_filtradoa["esc2_sit_alunos"].round(2),
+	            title="Escala 2: Média de situações ocasionadas por alunos, por Cidade, Sexo e Cor da Pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "E2_situacoes_estresse": "Média de Situações de estresse",
+	                "esc2_sit_alunos": "Média de situações ocasionados por alunos",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
 
-	        fig_media_E2.add_hline(
-	            y=media_geral,
+	        fig_media_E2a.add_hline(
+	            y=media_gerala,
 	            line_dash="dot",
 	            line_color="red",
-	            annotation_text=f"Média Geral da Escala 2: {media_geral:.3f}",
+	            annotation_text=f"Média Geral de situações ocasionadas por alunos: {media_gerala:.3f}",
 	            annotation_position="top left"
 	        )
 
-	        fig_media_E2.update_layout(
+	        fig_media_E2a.update_layout(
 	            xaxis_title="Cidade",
-	            yaxis_title="Média de situações de estresse (Escala 2)",
+	            yaxis_title="Média de situações ocasionadas por alunos (Escala 2)",
 	            legend_title="Sexo e Cor da Pele",
 	            plot_bgcolor="#F9F9F9",
 	            bargap=0.15,
 	        )
 
-	        fig_media_E2.update_traces(
+	        fig_media_E2a.update_traces(
 	            textposition="outside",
 	            marker_line_width=0.5
 	        )
 
-	        st.plotly_chart(fig_media_E2, use_container_width=True)
+	        st.plotly_chart(fig_media_E2a, use_container_width=True)
 
 	        # 🔽 Filtros exibidos apenas após o gráfico
 	        with st.expander("Ajuste os filtros abaixo", expanded=True):
@@ -875,17 +881,161 @@ elif page == 'Escala 2':
 	            if filtros_modificados:
 	                st.rerun()
 
+
 	st.divider()
+
+
+	st.subheader('Média das situações ocasionadas pelo contexto escolar, por cidade, sexo e cor da pele')   
+
+
+	# Calcular média
+	media_E2e_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc2_sit_escola'].mean().reset_index()
+	media_E2e_por_cidade_sexo['Sexo_Cor'] = media_E2e_por_cidade_sexo['Sexo'] + " - " + media_E2e_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E2e_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E2e_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E2e_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros baseados no estado
+	df_filtradoe = media_E2e_por_cidade_sexo[
+	    media_E2e_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E2e_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E2e_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+	   
+
+	# 🧮 Agrupamento e preparação dos dados
+	media_E2e_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc2_sit_escola'].mean().reset_index()
+	media_E2e_por_cidade_sexo['Sexo_Cor'] = media_E2e_por_cidade_sexo['Sexo'] + " - " + media_E2e_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E2e_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E2e_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E2e_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros
+	df_filtradoe = media_E2e_por_cidade_sexo[
+	    media_E2e_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E2e_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E2e_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+
+	# Mostrar gráfico (opcional)
+	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E2_site"):
+	    if df_filtradoe.empty:
+	        st.warning("Nenhum dado disponível para os filtros selecionados.")
+	    else:
+	        df_filtradoe["Sexo_Cor"] = df_filtradoe["Sexo"] + " - " + df_filtradoe["Cor_da_pele"]
+	        media_gerale = df_filtradoe["esc2_sit_escola"].mean()
+
+	        fig_media_E2e = px.bar(
+	            df_filtradoe,
+	            x="Cidade",
+	            y="esc2_sit_escola",
+	            color="Sexo_Cor",
+	            barmode="group",
+	            text=df_filtradoe["esc2_sit_escola"].round(2),
+	            title="Escala 2: Média de situações ocasionadas pelo contexto escolar, por Cidade, Sexo e Cor da Pele",
+	            labels={
+	                "Cidade": "Cidade",
+	                "esc2_sit_escola": "Média de situações ocasionados pelo contexto escolar",
+	                "Sexo_Cor": "Sexo e Cor da Pele"
+	            }
+	        )
+
+	        fig_media_E2e.add_hline(
+	            y=media_gerale,
+	            line_dash="dot",
+	            line_color="red",
+	            annotation_text=f"Média Geral de situações ocasionadas pelo contexto escolar: {media_gerale:.3f}",
+	            annotation_position="top left"
+	        )
+
+	        fig_media_E2e.update_layout(
+	            xaxis_title="Cidade",
+	            yaxis_title="Média de situações ocasionadas por alunos (Escala 2)",
+	            legend_title="Sexo e Cor da Pele",
+	            plot_bgcolor="#F9F9F9",
+	            bargap=0.15,
+	        )
+
+	        fig_media_E2e.update_traces(
+	            textposition="outside",
+	            marker_line_width=0.5
+	        )
+
+	        st.plotly_chart(fig_media_E2e, use_container_width=True)
+
+	        # 🔽 Filtros exibidos apenas após o gráfico
+	        with st.expander("Ajuste os filtros abaixo", expanded=True):
+	            nova_cidade = st.multiselect(
+	                "Selecione a(s) cidade(s):",
+	                cidades,
+	                default=st.session_state["cidade_selecionada"],
+	                key="cidade_finale"
+	            )
+	            novo_sexo = st.multiselect(
+	                "Selecione o(s) sexo(s):",
+	                sexos,
+	                default=st.session_state["sexo_selecionado"],
+	                key="sexo_finale"
+	            )
+	            nova_cor = st.multiselect(
+	                "Selecione a(s) cor(es) da pele:",
+	                cores_pele,
+	                default=st.session_state["cor_selecionada"],
+	                key="cor_finale"
+	            )
+
+	            # Atualizar session_state e recarregar se necessário
+	            filtros_modificados = False
+	            if nova_cidade != st.session_state["cidade_selecionada"]:
+	                st.session_state["cidade_selecionada"] = nova_cidade
+	                filtros_modificados = True
+	            if novo_sexo != st.session_state["sexo_selecionado"]:
+	                st.session_state["sexo_selecionado"] = novo_sexo
+	                filtros_modificados = True
+	            if nova_cor != st.session_state["cor_selecionada"]:
+	                st.session_state["cor_selecionada"] = nova_cor
+	                filtros_modificados = True
+	            if filtros_modificados:
+	                st.rerun()
+
+
+
+
+
+
+	st.divider()
+
+
 	st.subheader('Diagrama de dispersão entre a variável idade, a escala selecionada e as variáveis cor da pele e o sexo do participante.')
 
 
 	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = dados.drop(['Cidade'], axis=1)
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E2 = [
-	    'E2_situacoes_estresse', 'Escala_2_1', 'Escala_2_2',
+	    'esc2_sit_alunos', 'esc2_sit_escola', 'Escala_2_1', 'Escala_2_2',
 	    'Escala_2_3', 'Escala_2_4', 'Escala_2_5',
 	    'Escala_2_6', 'Escala_2_7', 
 	    'Escala_2_8', 'Escala_2_9', 'Escala_2_10', 'Escala_2_11', 'Escala_2_12',
@@ -953,7 +1103,7 @@ elif page == 'Escala 2':
 elif page == 'Escalas 3 e 4':
 	st.subheader('Atitudes dos professores e da escola em relação aos conflitos')
 
-	med_e3_4 = dados['E3_4_agentes'].mean()
+	med_e3_4 = dados['esc3_4_conflitos'].mean()
 	med_e3_1 = dados['Escala_3_1'].mean()
 	med_e3_2 = dados['Escala_3_2'].mean()
 	med_e3_3 = dados['Escala_3_3'].mean()
@@ -974,13 +1124,15 @@ elif page == 'Escalas 3 e 4':
 	med_e4_9 = dados['Escala_4_9'].mean()
 	
 	
-	st.markdown(f'**Média geral: {med_e3_4:.3f}**')
+
+	st.markdown(f'**Média geral nas escalas de atitudes em relação aos conflitos: {med_e3_4:.3f}**')
 
 	st.divider()
 	st.subheader('Média de cada item da escala')
 
 
-	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 1", key="med_E1"):
+	if st.checkbox ("Marque aqui para visualizar a média de cada item das escalas 3 e 4", key="med_E1"):
+		st.image ('q3.png')
 		st.markdown('**Como os professores reagem aos conflitos**')
 		st.write(f'1 = {med_e3_1:.3f} (Fingem que não perceberam)')
 		st.write(f'2 = {med_e3_2:.3f} (Informam a família sobre o ocorrido para que tome providências)')
@@ -991,6 +1143,9 @@ elif page == 'Escalas 3 e 4':
 		st.write(f'7 = {med_e3_7:.3f} (Não sabem o que fazer)')
 		st.write(f'8 = {med_e3_8:.3f} (Encaminham para a direção/coordenação/orientação)')
 
+		st.divider()
+
+		st.image ('q4.png')
 		st.markdown('**Como a escola reage aos conflitos**')
 		st.write(f'1 = {med_e4_1:.3f} (Os(as) alunos(as) envolvidos recebem advertência oralmente ou por escrito)')
 		st.write(f'2 = {med_e4_2:.3f} (Os alunos envolvidos são humilhados na frente dos colegas)')
@@ -1010,7 +1165,7 @@ elif page == 'Escalas 3 e 4':
 # Calcular média por cidade, sexo e cor da pele
 
 # Calcular média
-	media_E3_4_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E3_4_agentes'].mean().reset_index()
+	media_E3_4_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc3_4_conflitos'].mean().reset_index()
 	media_E3_4_por_cidade_sexo['Sexo_Cor'] = media_E3_4_por_cidade_sexo['Sexo'] + " - " + media_E3_4_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -1035,7 +1190,7 @@ elif page == 'Escalas 3 e 4':
 	   
 
 	# 🧮 Agrupamento e preparação dos dados
-	media_E3_4_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E3_4_agentes'].mean().reset_index()
+	media_E3_4_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc3_4_conflitos'].mean().reset_index()
 	media_E3_4_por_cidade_sexo['Sexo_Cor'] = media_E3_4_por_cidade_sexo['Sexo'] + " - " + media_E3_4_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -1064,19 +1219,19 @@ elif page == 'Escalas 3 e 4':
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
 	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["E3_4_agentes"].mean()
+	        media_geral = df_filtrado["esc3_4_conflitos"].mean()
 
 	        fig_media_E3_4 = px.bar(
 	            df_filtrado,
 	            x="Cidade",
-	            y="E3_4_agentes",
+	            y="esc3_4_conflitos",
 	            color="Sexo_Cor",
 	            barmode="group",
-	            text=df_filtrado["E3_4_agentes"].round(2),
-	            title="Escalas 3 e 4: Influência dos professores e da escola, por Cidade, Sexo e Cor da Pele",
+	            text=df_filtrado["esc3_4_conflitos"].round(2),
+	            title="Escalas 3 e 4: REação dos professores e da escola aos conflitos, por Cidade, Sexo e Cor da Pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "E3_4_agentes": "impacto dos professores e da escola (Escalas 3 e 4)",
+	                "esc3_4_conflitos": "impacto dos professores e da escola (Escalas 3 e 4)",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -1144,12 +1299,12 @@ elif page == 'Escalas 3 e 4':
 
 
 	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = dados.drop(['Cidade'], axis=1)
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E3_4 = [
-	    'E3_4_agentes', 'Escala_3_1', 'Escala_3_2',
+	    'esc3_4_conflitos', 'Escala_3_1', 'Escala_3_2',
 	    'Escala_3_3', 'Escala_3_4', 'Escala_3_5',
 	    'Escala_3_6', 'Escala_3_7', 
 	    'Escala_3_8', 'Escala_4_1', 'Escala_4_2', 'Escala_4_3', 'Escala_4_4',
@@ -1214,9 +1369,11 @@ elif page == 'Escalas 3 e 4':
 # # ----------------------------Escala 5-----------------------------------------------
 # # ----------------------------Escala 5-----------------------------------------------
 elif page == 'Escala 5':
-	st.subheader('Situações de discriminação pessoal ocorridas nas escolas')
-	dados = pd.read_csv('bd_oppes.csv')
-	med_e5 = dados['E5_disc_pessoal'].mean()
+	st.subheader('Situações de situações de bulling ocorridas nas escolas')
+	dados = pd.read_csv('oppes_versao2.csv')
+	med_e5al = dados['esc5_bull_alvo'].mean()
+	med_e5ag = dados['esc5_bull_agente'].mean()
+	med_e5te = dados['esc5_bull_testem'].mean()
 	med_e5_1 = dados['Escala_6_1'].mean()
 	med_e5_2 = dados['Escala_6_2'].mean()
 	med_e5_3 = dados['Escala_6_3'].mean()
@@ -1226,36 +1383,45 @@ elif page == 'Escala 5':
 	med_e5_7 = dados['Escala_6_7'].mean()
 	
 
-	st.markdown(f'**Média geral: {med_e5:.3f}**')
+	st.markdown(f'**Alvo do bulling: {med_e5al:.3f}**')
+	st.markdown(f'**Agente do bulling: {med_e5ag:.3f}**')
+	st.markdown(f'**Testemunhou o bulling: {med_e5te:.3f}**')
 
 	st.divider()
 	st.subheader('Média de cada item da escala 5')
 
 
 	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 5", key="med_E5"):
+		st.image ('q5.png')
+		st.markdown(f'**Alvo do bulling: {med_e5al:.3f}**')
 		st.write(f'1 = {med_e5_1:.3f} (Eu fui agredida(o), maltratada(o), intimidada(o), ameaçada(o), excluída(o) ou humilhada(o) por algum(a) colega da escola ou professor)')
 		st.write(f'2 = {med_e5_2:.3f} (Eu fui provocada(o), zoada(o), apelidada(o) ou irritada(o) por algum(a) colega da escola ou professor)')
 		st.write(f'3 = {med_e5_3:.3f} (Eu tenho medo de alguns alunos)')
+
+		st.markdown(f'**Agente do bulling: {med_e5ag:.3f}**')
+		
 		st.write(f'4 = {med_e5_4:.3f} (Eu agredi, maltratei, intimidei, ameacei, exclui ou humilhei algum(a) colega ou professor(a) da escola)')
 		st.write(f'5 = {med_e5_5:.3f} (Eu provoquei, zoei, coloquei apelidos ou irritei algum(a) colega ou professor(a) da escola)')
+
+		st.markdown(f'**Testemunhou o bulling: {med_e5te:.3f}**')
 		st.write(f'6 = {med_e5_6:.3f} (Eu vi alguém sendo agredida(o), maltratada(o), intimidada(o), ameaçada(o), excluída(o) ou humilhada(o) por algum(a) colega ou professor(a) da escola)')
 		st.write(f'7 = {med_e5_7:.3f} (Eu vi alguém sendo provocada(o), zoada(o), recebendo apelidos ouirritada(o) por algum(a) colega ou professor(a) da escola)')
 		
 
 	st.divider()
-	st.subheader('Média da escala, por cidade, sexo e cor da pele')   
+	st.subheader('Média de ser alvo de bulling, por cidade, sexo e cor da pele')   
 
 
 # Calcular média por cidade, sexo e cor da pele
 
 # Calcular média
-	media_E5_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E5_disc_pessoal'].mean().reset_index()
-	media_E5_por_cidade_sexo['Sexo_Cor'] = media_E5_por_cidade_sexo['Sexo'] + " - " + media_E5_por_cidade_sexo['Cor_da_pele']
+	media_E5al_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc5_bull_alvo'].mean().reset_index()
+	media_E5al_por_cidade_sexo['Sexo_Cor'] = media_E5al_por_cidade_sexo['Sexo'] + " - " + media_E5al_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
-	cidades = media_E5_por_cidade_sexo["Cidade"].unique()
-	sexos = media_E5_por_cidade_sexo["Sexo"].unique()
-	cores_pele = media_E5_por_cidade_sexo["Cor_da_pele"].unique()
+	cidades = media_E5al_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E5al_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E5al_por_cidade_sexo["Cor_da_pele"].unique()
 
 	# Inicializar session_state
 	if "cidade_selecionada" not in st.session_state:
@@ -1266,21 +1432,21 @@ elif page == 'Escala 5':
 	    st.session_state["cor_selecionada"] = list(cores_pele)
 
 	# Aplicar filtros baseados no estado
-	df_filtrado = media_E5_por_cidade_sexo[
-	    media_E5_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
-	    media_E5_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
-	    media_E5_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	df_filfradoal = media_E5al_por_cidade_sexo[
+	    media_E5al_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E5al_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E5al_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
 	].copy()
 	   
 
 	# 🧮 Agrupamento e preparação dos dados
-	media_E5_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E5_disc_pessoal'].mean().reset_index()
-	media_E5_por_cidade_sexo['Sexo_Cor'] = media_E5_por_cidade_sexo['Sexo'] + " - " + media_E5_por_cidade_sexo['Cor_da_pele']
+	media_E5al_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc5_bull_alvo'].mean().reset_index()
+	media_E5al_por_cidade_sexo['Sexo_Cor'] = media_E5al_por_cidade_sexo['Sexo'] + " - " + media_E5al_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
-	cidades = media_E5_por_cidade_sexo["Cidade"].unique()
-	sexos = media_E5_por_cidade_sexo["Sexo"].unique()
-	cores_pele = media_E5_por_cidade_sexo["Cor_da_pele"].unique()
+	cidades = media_E5al_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E5al_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E5al_por_cidade_sexo["Cor_da_pele"].unique()
 
 	# Inicializar session_state
 	if "cidade_selecionada" not in st.session_state:
@@ -1291,44 +1457,44 @@ elif page == 'Escala 5':
 	    st.session_state["cor_selecionada"] = list(cores_pele)
 
 	# Aplicar filtros
-	df_filtrado = media_E5_por_cidade_sexo[
-	    media_E5_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
-	    media_E5_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
-	    media_E5_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	df_filfradoal = media_E5al_por_cidade_sexo[
+	    media_E5al_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E5al_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E5al_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
 	].copy()
 
 	# Mostrar gráfico (opcional)
-	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E1_csc"):
-	    if df_filtrado.empty:
+	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E5_al"):
+	    if df_filfradoal.empty:
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
-	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["E5_disc_pessoal"].mean()
+	        df_filfradoal["Sexo_Cor"] = df_filfradoal["Sexo"] + " - " + df_filfradoal["Cor_da_pele"]
+	        media_geral_al = df_filfradoal["esc5_bull_alvo"].mean()
 
-	        fig_media_E5 = px.bar(
-	            df_filtrado,
+	        fig_media_E5al = px.bar(
+	            df_filfradoal,
 	            x="Cidade",
-	            y="E5_disc_pessoal",
+	            y="esc5_bull_alvo",
 	            color="Sexo_Cor",
 	            barmode="group",
-	            text=df_filtrado["E5_disc_pessoal"].round(2),
+	            text=df_filfradoal["esc5_bull_alvo"].round(2),
 	            title="Escala 1: Média de ter sofrido discriminação pessoal, por Cidade, Sexo e Cor da Pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "E5_disc_pessoal": "Média de de ter sofrido discriminação pessoal",
+	                "esc5_bull_alvo": "Média de de ter sofrido discriminação pessoal",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
 
-	        fig_media_E5.add_hline(
-	            y=media_geral,
+	        fig_media_E5al.add_hline(
+	            y=media_geral_al,
 	            line_dash="dot",
 	            line_color="red",
-	            annotation_text=f"Média Geral da Escala 5: {media_geral:.3f}",
+	            annotation_text=f"Média Geral da Escala 5: {media_geral_al:.3f}",
 	            annotation_position="top left"
 	        )
 
-	        fig_media_E5.update_layout(
+	        fig_media_E5al.update_layout(
 	            xaxis_title="Cidade",
 	            yaxis_title="Média do Sentimento de de ter sofrido discriminação pessoal (Escala 5)",
 	            legend_title="Sexo e Cor da Pele",
@@ -1336,12 +1502,12 @@ elif page == 'Escala 5':
 	            bargap=0.15,
 	        )
 
-	        fig_media_E5.update_traces(
+	        fig_media_E5al.update_traces(
 	            textposition="outside",
 	            marker_line_width=0.5
 	        )
 
-	        st.plotly_chart(fig_media_E5, use_container_width=True)
+	        st.plotly_chart(fig_media_E5al, use_container_width=True)
 
 	        # 🔽 Filtros exibidos apenas após o gráfico
 	        with st.expander("Ajuste os filtros abaixo", expanded=True):
@@ -1378,19 +1544,290 @@ elif page == 'Escala 5':
 	            if filtros_modificados:
 	                st.rerun()
 
+	st.subheader('Média de ser agente de bulling, por cidade, sexo e cor da pele')   
+
+
+	# Calcular média por cidade, sexo e cor da pele
+
+	# Calcular média
+	media_E5ag_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc5_bull_agente'].mean().reset_index()
+	media_E5ag_por_cidade_sexo['Sexo_Cor'] = media_E5ag_por_cidade_sexo['Sexo'] + " - " + media_E5ag_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E5ag_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E5ag_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E5ag_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros baseados no estado
+	df_filtradoag = media_E5ag_por_cidade_sexo[
+	    media_E5ag_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E5ag_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E5ag_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+	   
+
+	# 🧮 Agrupamento e preparação dos dados
+	media_E5ag_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc5_bull_agente'].mean().reset_index()
+	media_E5ag_por_cidade_sexo['Sexo_Cor'] = media_E5ag_por_cidade_sexo['Sexo'] + " - " + media_E5ag_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E5ag_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E5ag_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E5ag_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros
+	df_filtradoag = media_E5ag_por_cidade_sexo[
+	    media_E5ag_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E5ag_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E5ag_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+
+	# Mostrar gráfico (opcional)
+	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E5_ag"):
+	    if df_filtradoag.empty:
+	        st.warning("Nenhum dado disponível para os filtros selecionados.")
+	    else:
+	        df_filtradoag["Sexo_Cor"] = df_filtradoag["Sexo"] + " - " + df_filtradoag["Cor_da_pele"]
+	        media_geral_ag = df_filtradoag["esc5_bull_agente"].mean()
+
+	        fig_media_E5ag = px.bar(
+	            df_filtradoag,
+	            x="Cidade",
+	            y="esc5_bull_agente",
+	            color="Sexo_Cor",
+	            barmode="group",
+	            text=df_filtradoag["esc5_bull_agente"].round(2),
+	            title="Escala 1: Média de ter praticado bulling, por Cidade, Sexo e Cor da Pele",
+	            labels={
+	                "Cidade": "Cidade",
+	                "esc5_bull_alvo": "Média de de ter spraticado bulling",
+	                "Sexo_Cor": "Sexo e Cor da Pele"
+	            }
+	        )
+
+	        fig_media_E5ag.add_hline(
+	            y=media_geral_ag,
+	            line_dash="dot",
+	            line_color="red",
+	            annotation_text=f"Média Geral de ter praticado bulling: {media_geral_ag:.3f}",
+	            annotation_position="top left"
+	        )
+
+	        fig_media_E5ag.update_layout(
+	            xaxis_title="Cidade",
+	            yaxis_title="Média de ter praticado bulling (Escala 5)",
+	            legend_title="Sexo e Cor da Pele",
+	            plot_bgcolor="#F9F9F9",
+	            bargap=0.15,
+	        )
+
+	        fig_media_E5ag.update_traces(
+	            textposition="outside",
+	            marker_line_width=0.5
+	        )
+
+	        st.plotly_chart(fig_media_E5ag, use_container_width=True)
+
+	        # 🔽 Filtros exibidos apenas após o gráfico
+	        with st.expander("Ajuste os filtros abaixo", expanded=True):
+	            nova_cidade = st.multiselect(
+	                "Selecione a(s) cidade(s):",
+	                cidades,
+	                default=st.session_state["cidade_selecionada"],
+	                key="cidade_finalag"
+	            )
+	            novo_sexo = st.multiselect(
+	                "Selecione o(s) sexo(s):",
+	                sexos,
+	                default=st.session_state["sexo_selecionado"],
+	                key="sexo_finalag"
+	            )
+	            nova_cor = st.multiselect(
+	                "Selecione a(s) cor(es) da pele:",
+	                cores_pele,
+	                default=st.session_state["cor_selecionada"],
+	                key="cor_finalag"
+	            )
+
+	            # Atualizar session_state e recarregar se necessário
+	            filtros_modificados = False
+	            if nova_cidade != st.session_state["cidade_selecionada"]:
+	                st.session_state["cidade_selecionada"] = nova_cidade
+	                filtros_modificados = True
+	            if novo_sexo != st.session_state["sexo_selecionado"]:
+	                st.session_state["sexo_selecionado"] = novo_sexo
+	                filtros_modificados = True
+	            if nova_cor != st.session_state["cor_selecionada"]:
+	                st.session_state["cor_selecionada"] = nova_cor
+	                filtros_modificados = True
+	            if filtros_modificados:
+	                st.rerun()
+
+	st.subheader('Média de ser testemunha de bulling, por cidade, sexo e cor da pele')   
+
+
+# Calcular média por cidade, sexo e cor da pele
+
+# Calcular média
+	media_E5te_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc5_bull_testem'].mean().reset_index()
+	media_E5te_por_cidade_sexo['Sexo_Cor'] = media_E5te_por_cidade_sexo['Sexo'] + " - " + media_E5te_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E5te_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E5te_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E5te_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros baseados no estado
+	df_filtradote = media_E5te_por_cidade_sexo[
+	    media_E5te_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E5te_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E5te_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+	   
+
+	# 🧮 Agrupamento e preparação dos dados
+	media_E5te_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc5_bull_testem'].mean().reset_index()
+	media_E5te_por_cidade_sexo['Sexo_Cor'] = media_E5te_por_cidade_sexo['Sexo'] + " - " + media_E5te_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E5te_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E5te_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E5te_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros
+	df_filtradote = media_E5te_por_cidade_sexo[
+	    media_E5te_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E5te_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E5te_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+
+	# Mostrar gráfico (opcional)
+	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E5_te"):
+	    if df_filtradote.empty:
+	        st.warning("Nenhum dado disponível para os filtros selecionados.")
+	    else:
+	        df_filtradote["Sexo_Cor"] = df_filtradote["Sexo"] + " - " + df_filtradote["Cor_da_pele"]
+	        media_geral_te = df_filtradote["esc5_bull_testem"].mean()
+
+	        fig_media_E5te = px.bar(
+	            df_filtradote,
+	            x="Cidade",
+	            y="esc5_bull_testem",
+	            color="Sexo_Cor",
+	            barmode="group",
+	            text=df_filtradote["esc5_bull_testem"].round(2),
+	            title="Escala 5: Média de ter testemunhado bulling, por Cidade, Sexo e Cor da Pele",
+	            labels={
+	                "Cidade": "Cidade",
+	                "esc5_bull_testem": "Média de de ter testemunhado bulling",
+	                "Sexo_Cor": "Sexo e Cor da Pele"
+	            }
+	        )
+
+	        fig_media_E5te.add_hline(
+	            y=media_geral_te,
+	            line_dash="dot",
+	            line_color="red",
+	            annotation_text=f"Média Geral de ter testemunhado bulling: {media_geral_te:.3f}",
+	            annotation_position="top left"
+	        )
+
+	        fig_media_E5te.update_layout(
+	            xaxis_title="Cidade",
+	            yaxis_title="Média de ter testemunhado bulling (Escala 5)",
+	            legend_title="Sexo e Cor da Pele",
+	            plot_bgcolor="#F9F9F9",
+	            bargap=0.15,
+	        )
+
+	        fig_media_E5te.update_traces(
+	            textposition="outside",
+	            marker_line_width=0.5
+	        )
+
+	        st.plotly_chart(fig_media_E5te, use_container_width=True)
+
+	        # 🔽 Filtros exibidos apenas após o gráfico
+	        with st.expander("Ajuste os filtros abaixo", expanded=True):
+	            nova_cidade = st.multiselect(
+	                "Selecione a(s) cidade(s):",
+	                cidades,
+	                default=st.session_state["cidade_selecionada"],
+	                key="cidade_finalte"
+	            )
+	            novo_sexo = st.multiselect(
+	                "Selecione o(s) sexo(s):",
+	                sexos,
+	                default=st.session_state["sexo_selecionado"],
+	                key="sexo_finalte"
+	            )
+	            nova_cor = st.multiselect(
+	                "Selecione a(s) cor(es) da pele:",
+	                cores_pele,
+	                default=st.session_state["cor_selecionada"],
+	                key="cor_finalte"
+	            )
+
+	            # Atualizar session_state e recarregar se necessário
+	            filtros_modificados = False
+	            if nova_cidade != st.session_state["cidade_selecionada"]:
+	                st.session_state["cidade_selecionada"] = nova_cidade
+	                filtros_modificados = True
+	            if novo_sexo != st.session_state["sexo_selecionado"]:
+	                st.session_state["sexo_selecionado"] = novo_sexo
+	                filtros_modificados = True
+	            if nova_cor != st.session_state["cor_selecionada"]:
+	                st.session_state["cor_selecionada"] = nova_cor
+	                filtros_modificados = True
+	            if filtros_modificados:
+	                st.rerun()
+
+
 	st.divider()
 	st.subheader('Diagrama de dispersão entre a variável idade, a escala selecionada e as variáveis cor da pele e o sexo do participante.')
 	
 
 	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = dados.drop(['Cidade'], axis=1)
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E5 = [
-	    'E1_ameacas', 'Escala_6_1', 'Escala_6_2',
-	    'Escala_6_3', 'Escala_6_4', 'Escala_6_6',
-	    'Escala_6_6', 'Escala_6_7'
+	    'esc5_bull_alvo', 'esc5_bull_agente', 'esc5_bull_testem', 'Escala_5_1', 'Escala_5_2',
+	    'Escala_5_3', 'Escala_5_4', 'Escala_5_5',
+	    'Escala_5_6', 'Escala_5_7'
 	]
 	if st.checkbox ("Marque aqui para selecionar as variáveis e visualizar os resultados ", key="graf_reg_esc5"):
 		# === Interface de seleção ===
@@ -1454,8 +1891,8 @@ elif page == 'Escala 5':
 elif page == 'Escala 6':
 	st.subheader('Locais em que ocorreram os eventos nas escolas')
 
-	dados = pd.read_csv('bd_oppes.csv')
-	med_e6 = dados['E6_locais'].mean()
+	dados = pd.read_csv('oppes_versao2.csv')
+	med_e6 = dados['esc6_loc_agr_esc'].mean()
 	med_e6_1 = dados['Escala_6_1'].mean()
 	med_e6_2 = dados['Escala_6_2'].mean()
 	med_e6_3 = dados['Escala_6_3'].mean()
@@ -1465,30 +1902,35 @@ elif page == 'Escala 6':
 	med_e6_7 = dados['Escala_6_7'].mean()
 	med_e6_8 = dados['Escala_6_8'].mean()
 
-	st.markdown(f'**Média geral: {med_e6:.3f}**')
 
 	st.divider()
 	st.subheader('Média de cada item da escala')
 
 
-	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 6", key="med_E6"):
+	if st.checkbox ("Marque aqui para visualizar a média de cada item dos locais em que ocorreram o bulling", key="med_E6"):
+		st.image ('q6.png')
+		st.markdown(f'**Média geral no ambiente escolar {med_e6:.3f}**')
 		st.write(f'1 = {med_e6_1:.3f} (Na classe)')
 		st.write(f'2 = {med_e6_2:.3f} (Nos corredores)')
 		st.write(f'3 = {med_e6_3:.3f} (No pátio)')
 		st.write(f'4 = {med_e6_4:.3f} (No refeitório/cantina)')
 		st.write(f'5 = {med_e6_5:.3f} (Nos banheiros)')
 		st.write(f'6 = {med_e6_6:.3f} (Na quadra)')
+
+		st.markdown(f'**Nas imediações da escola**')
 		st.write(f'7 = {med_e6_7:.3f} (Em locais próximos à escola)')
+
+		st.markdown(f'**Nos ambientes online**')
 		st.write(f'8 = {med_e6_8:.3f} (Através da internet ou celular)')
 
 	st.divider()
-	st.subheader('Média da escala de locais em que sofre discriminação, por cidade, sexo e cor da pele')   
+	st.subheader('Bulling sofrido no ambiente escolar, por cidade, sexo e cor da pele')   
 
 
 # Calcular média por cidade, sexo e cor da pele
 
 # Calcular média
-	media_E6_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E6_locais'].mean().reset_index()
+	media_E6_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc6_loc_agr_esc'].mean().reset_index()
 	media_E6_por_cidade_sexo['Sexo_Cor'] = media_E6_por_cidade_sexo['Sexo'] + " - " + media_E6_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -1513,7 +1955,7 @@ elif page == 'Escala 6':
 	   
 
 	# 🧮 Agrupamento e preparação dos dados
-	media_E6_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E6_locais'].mean().reset_index()
+	media_E6_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc6_loc_agr_esc'].mean().reset_index()
 	media_E6_por_cidade_sexo['Sexo_Cor'] = media_E6_por_cidade_sexo['Sexo'] + " - " + media_E6_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -1537,24 +1979,24 @@ elif page == 'Escala 6':
 	].copy()
 
 	# Mostrar gráfico (opcional)
-	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E1_csc"):
+	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E6_esc"):
 	    if df_filtrado.empty:
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
 	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["E6_locais"].mean()
+	        media_geral = df_filtrado["esc6_loc_agr_esc"].mean()
 
 	        fig_media_E6 = px.bar(
 	            df_filtrado,
 	            x="Cidade",
-	            y="E6_locais",
+	            y="esc6_loc_agr_esc",
 	            color="Sexo_Cor",
 	            barmode="group",
-	            text=df_filtrado["E6_locais"].round(2),
-	            title="Escala 6: Média dos locais em que sofreu discriminação pessoal, por Cidade, Sexo e Cor da Pele",
+	            text=df_filtrado["esc6_loc_agr_esc"].round(2),
+	            title="Escala 6: Bulling sofrido no ambiente escolar, por cidade, sexo e cor da pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "E6_locais": "Média dos locais em que sofreu discriminação pessoal",
+	                "esc6_loc_agr_esc": "Bulling sofrido no ambiente escolar",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -1563,7 +2005,7 @@ elif page == 'Escala 6':
 	            y=media_geral,
 	            line_dash="dot",
 	            line_color="red",
-	            annotation_text=f"Média Geral da Escala 6: {media_geral:.3f}",
+	            annotation_text=f"Bulling sofrido no ambiente escolar: {media_geral:.3f}",
 	            annotation_position="top left"
 	        )
 
@@ -1618,18 +2060,289 @@ elif page == 'Escala 6':
 	                st.rerun()
 
 	st.divider()
+	st.subheader('Bulling sofrido nas imediações da escola, por cidade, sexo e cor da pele')   
+
+
+	# Calcular média por cidade, sexo e cor da pele
+
+	# Calcular média
+	media_E6i_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc6_loc_agr_imed'].mean().reset_index()
+	media_E6i_por_cidade_sexo['Sexo_Cor'] = media_E6i_por_cidade_sexo['Sexo'] + " - " + media_E6i_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E6i_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E6i_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E6i_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros baseados no estado
+	df_filtradoi = media_E6i_por_cidade_sexo[
+	    media_E6i_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E6i_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E6i_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+	   
+
+	# 🧮 Agrupamento e preparação dos dados
+	media_E6i_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc6_loc_agr_imed'].mean().reset_index()
+	media_E6i_por_cidade_sexo['Sexo_Cor'] = media_E6i_por_cidade_sexo['Sexo'] + " - " + media_E6i_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E6i_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E6i_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E6i_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros
+	df_filtradoi = media_E6i_por_cidade_sexo[
+	    media_E6i_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E6i_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E6i_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+
+	# Mostrar gráfico (opcional)
+	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E6i_imed"):
+	    if df_filtradoi.empty:
+	        st.warning("Nenhum dado disponível para os filtros selecionados.")
+	    else:
+	        df_filtradoi["Sexo_Cor"] = df_filtradoi["Sexo"] + " - " + df_filtradoi["Cor_da_pele"]
+	        media_gerali = df_filtradoi["esc6_loc_agr_imed"].mean()
+
+	        fig_media_E6i = px.bar(
+	            df_filtradoi,
+	            x="Cidade",
+	            y="esc6_loc_agr_imed",
+	            color="Sexo_Cor",
+	            barmode="group",
+	            text=df_filtradoi["esc6_loc_agr_imed"].round(2),
+	            title="Escala 6: Bulling sofrido nas imediações da escola, por cidade, sexo e cor da pele",
+	            labels={
+	                "Cidade": "Cidade",
+	                "esc6_loc_agr_imed": "Bulling sofrido nas imediações da escola",
+	                "Sexo_Cor": "Sexo e Cor da Pele"
+	            }
+	        )
+
+	        fig_media_E6i.add_hline(
+	            y=media_gerali,
+	            line_dash="dot",
+	            line_color="red",
+	            annotation_text=f"Bulling sofrido nas imediações da escola: {media_gerali:.3f}",
+	            annotation_position="top left"
+	        )
+
+	        fig_media_E6i.update_layout(
+	            xaxis_title="Cidade",
+	            yaxis_title="MBulling sofrido nas imediações da escola (Escala 6)",
+	            legend_title="Sexo e Cor da Pele",
+	            plot_bgcolor="#F9F9F9",
+	            bargap=0.15,
+	        )
+
+	        fig_media_E6i.update_traces(
+	            textposition="outside",
+	            marker_line_width=0.5
+	        )
+
+	        st.plotly_chart(fig_media_E6i, use_container_width=True)
+
+	        # 🔽 Filtros exibidos apenas após o gráfico
+	        with st.expander("Ajuste os filtros abaixo", expanded=True):
+	            nova_cidade = st.multiselect(
+	                "Selecione a(s) cidade(s):",
+	                cidades,
+	                default=st.session_state["cidade_selecionada"],
+	                key="cidade_finali"
+	            )
+	            novo_sexo = st.multiselect(
+	                "Selecione o(s) sexo(s):",
+	                sexos,
+	                default=st.session_state["sexo_selecionado"],
+	                key="sexo_finali"
+	            )
+	            nova_cor = st.multiselect(
+	                "Selecione a(s) cor(es) da pele:",
+	                cores_pele,
+	                default=st.session_state["cor_selecionada"],
+	                key="cor_finali"
+	            )
+
+	            # Atualizar session_state e recarregar se necessário
+	            filtros_modificados = False
+	            if nova_cidade != st.session_state["cidade_selecionada"]:
+	                st.session_state["cidade_selecionada"] = nova_cidade
+	                filtros_modificados = True
+	            if novo_sexo != st.session_state["sexo_selecionado"]:
+	                st.session_state["sexo_selecionado"] = novo_sexo
+	                filtros_modificados = True
+	            if nova_cor != st.session_state["cor_selecionada"]:
+	                st.session_state["cor_selecionada"] = nova_cor
+	                filtros_modificados = True
+	            if filtros_modificados:
+	                st.rerun()
+
+	st.divider()
+	st.subheader('Bulling sofrido em ambientes online, por cidade, sexo e cor da pele')   
+
+
+# Calcular média por cidade, sexo e cor da pele
+
+# Calcular média
+	media_E6o_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc6_loc_agr_internet'].mean().reset_index()
+	media_E6o_por_cidade_sexo['Sexo_Cor'] = media_E6o_por_cidade_sexo['Sexo'] + " - " + media_E6o_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E6o_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E6o_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E6o_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros baseados no estado
+	df_filtradoo = media_E6o_por_cidade_sexo[
+	    media_E6o_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E6o_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E6o_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+	   
+
+	# 🧮 Agrupamento e preparação dos dados
+	media_E6o_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc6_loc_agr_internet'].mean().reset_index()
+	media_E6o_por_cidade_sexo['Sexo_Cor'] = media_E6o_por_cidade_sexo['Sexo'] + " - " + media_E6o_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E6o_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E6o_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E6o_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros
+	df_filtradoo = media_E6o_por_cidade_sexo[
+	    media_E6o_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E6o_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E6o_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+
+	# Mostrar gráfico (opcional)
+	if st.checkbox("Marque aqui para visualizar o gráfico do bulling sofrido em ambientes online, por cidade, sexo e cor da pele", key="graf_E6o_imed"):
+	    if df_filtradoo.empty:
+	        st.warning("Nenhum dado disponível para os filtros selecionados.")
+	    else:
+	        df_filtradoo["Sexo_Cor"] = df_filtradoo["Sexo"] + " - " + df_filtradoo["Cor_da_pele"]
+	        media_geralo = df_filtradoo["esc6_loc_agr_internet"].mean()
+
+	        fig_media_E6o = px.bar(
+	            df_filtradoo,
+	            x="Cidade",
+	            y="esc6_loc_agr_internet",
+	            color="Sexo_Cor",
+	            barmode="group",
+	            text=df_filtradoo["esc6_loc_agr_internet"].round(2),
+	            title="Escala 6: Bulling sofrido nos ambientes online, por cidade, sexo e cor da pele",
+	            labels={
+	                "Cidade": "Cidade",
+	                "esc6_loc_agr_internet": "Bulling sofrido nos ambientes online",
+	                "Sexo_Cor": "Sexo e Cor da Pele"
+	            }
+	        )
+
+	        fig_media_E6o.add_hline(
+	            y=media_geralo,
+	            line_dash="dot",
+	            line_color="red",
+	            annotation_text=f"Bulling sofrido nas imediações da escola: {media_geralo:.3f}",
+	            annotation_position="top left"
+	        )
+
+	        fig_media_E6o.update_layout(
+	            xaxis_title="Cidade",
+	            yaxis_title="MBulling sofrido nas imediações da escola (Escala 6)",
+	            legend_title="Sexo e Cor da Pele",
+	            plot_bgcolor="#F9F9F9",
+	            bargap=0.15,
+	        )
+
+	        fig_media_E6o.update_traces(
+	            textposition="outside",
+	            marker_line_width=0.5
+	        )
+
+	        st.plotly_chart(fig_media_E6o, use_container_width=True)
+
+	        # 🔽 Filtros exibidos apenas após o gráfico
+	        with st.expander("Ajuste os filtros abaixo", expanded=True):
+	            nova_cidade = st.multiselect(
+	                "Selecione a(s) cidade(s):",
+	                cidades,
+	                default=st.session_state["cidade_selecionada"],
+	                key="cidade_finalo"
+	            )
+	            novo_sexo = st.multiselect(
+	                "Selecione o(s) sexo(s):",
+	                sexos,
+	                default=st.session_state["sexo_selecionado"],
+	                key="sexo_finalo"
+	            )
+	            nova_cor = st.multiselect(
+	                "Selecione a(s) cor(es) da pele:",
+	                cores_pele,
+	                default=st.session_state["cor_selecionada"],
+	                key="cor_finalo"
+	            )
+
+	            # Atualizar session_state e recarregar se necessário
+	            filtros_modificados = False
+	            if nova_cidade != st.session_state["cidade_selecionada"]:
+	                st.session_state["cidade_selecionada"] = nova_cidade
+	                filtros_modificados = True
+	            if novo_sexo != st.session_state["sexo_selecionado"]:
+	                st.session_state["sexo_selecionado"] = novo_sexo
+	                filtros_modificados = True
+	            if nova_cor != st.session_state["cor_selecionada"]:
+	                st.session_state["cor_selecionada"] = nova_cor
+	                filtros_modificados = True
+	            if filtros_modificados:
+	                st.rerun()
+
+	st.divider()
 	st.subheader('Diagrama de dispersão entre a variável idade, a escala selecionada e as variáveis cor da pele e o sexo do participante.')
 	
 
 	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = dados.drop(['Cidade'], axis=1)
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E6 = [
-	    'E6_locais', 'Escala_6_1', 'Escala_6_2',
-	    'Escala_6_3', 'Escala_6_4', 'Escala_6_5',
-	    'Escala_6_6', 'Escala_6_7', 'Escala_6_8'
+	    'esc6_loc_agr_esc', 'esc6_loc_agr_imed', 'esc6_loc_agr_internet',  'Escala_6_1', 'Escala_6_2',
+	    'Escala_6_3', 'Escala_6_4', 'Escala_6_5','Escala_6_6'
 	]
 	if st.checkbox ("Marque aqui para selecionar as variáveis e visualizar os resultados ", key="graf_reg_esc6"):
 		# === Interface de seleção ===
@@ -1695,8 +2408,9 @@ elif page == 'Escala 6':
 elif page == 'Escala 7':
 	st.subheader('Grupos de pertença dos estudantes')
 
-	dados = pd.read_csv('bd_oppes.csv')
-	med_e7 = dados['E7_soma_pertenca'].mean()
+	dados = pd.read_csv('oppes_versao2.csv')
+	med_e7 = dados['esc7_soma_pert'].mean()
+	med_e7e = dados['esc7_grup_estig'].mean()
 	med_e7_1 = dados['Escala_7_1'].mean()
 	med_e7_2 = dados['Escala_7_2'].mean()
 	med_e7_3 = dados['Escala_7_3'].mean()
@@ -1721,45 +2435,55 @@ elif page == 'Escala 7':
 	med_e7_22 = dados['Escala_7_22'].mean()
 
 
-	st.markdown(f'**Média geral: {med_e7:.3f}**')
+	st.markdown(f'**Proporção de grupos de pertença: {med_e7:.3f}**')
+	st.markdown(f'**Proporção de grupos de pertença estigmatizados: {med_e7e:.3f}**')
 
 	st.divider()
 	st.subheader('Proporção de cada item da escala')
 
 
 	if st.checkbox ("Marque aqui para visualizar a proporção em cada item da Escala 7", key="med_E7"):
+		st.image ('q7.png')
+		st.write('---------------------------------')
 		st.write(f'Homem: {med_e7_1:.3f}')
 		st.write(f'Mulher: {med_e7_2:.3f}')
+		st.write('---------------------------------')
 		st.write(f'Cisgênero: {med_e7_3:.3f}')
 		st.write(f'Transgênero: {med_e7_4:.3f}')
+		st.write('---------------------------------')
 		st.write(f'Heterossexual: {med_e7_5:.3f}')
 		st.write(f'Bissexual: {med_e7_6:.3f}')
 		st.write(f'Gay: {med_e7_7:.3f}')
 		st.write(f'Lésbica: {med_e7_8:.3f}')
+		st.write('---------------------------------')
 		st.write(f'Gordo(a): {med_e7_9:.3f}')
 		st.write(f'Magro(a): {med_e7_10:.3f}')
+		st.write('---------------------------------')
 		st.write(f'Pessoa com deficiência: {med_e7_11:.3f}')
+		st.write('---------------------------------')
 		st.write(f'Branco: {med_e7_12:.3f}')
 		st.write(f'Pardo: {med_e7_13:.3f}')
 		st.write(f'Preto: {med_e7_14:.3f}')
 		st.write(f'Indígena: {med_e7_15:.3f}')
+		st.write('---------------------------------')
 		st.write(f'Rico (a): {med_e7_16:.3f}')
 		st.write(f'Pobre: {med_e7_17:.3f}')
+		st.write('---------------------------------')
 		st.write(f'Ateu: {med_e7_18:.3f}')
 		st.write(f'Católico(a): {med_e7_19:.3f}')
 		st.write(f'Espírita: {med_e7_20:.3f}')
-		st.write(f'Evangèlico(a): {med_e7_21:.3f}')
+		st.write(f'Evangélico(a): {med_e7_21:.3f}')
 		st.write(f'Religião de matriz africana: {med_e7_22:.3f}')
 
 
 	st.divider()
-	st.subheader('Média da escala dos grupos de pertencimento, por cidade, sexo e cor da pele')   
+	st.subheader('Proporção de grupos de pertencimento, por cidade, sexo e cor da pele')   
 
 
 # Calcular média por cidade, sexo e cor da pele
 
 # Calcular média
-	media_E7_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E7_soma_pertenca'].mean().reset_index()
+	media_E7_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc7_soma_pert'].mean().reset_index()
 	media_E7_por_cidade_sexo['Sexo_Cor'] = media_E7_por_cidade_sexo['Sexo'] + " - " + media_E7_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -1784,7 +2508,7 @@ elif page == 'Escala 7':
 	   
 
 	# 🧮 Agrupamento e preparação dos dados
-	media_E7_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E7_soma_pertenca'].mean().reset_index()
+	media_E7_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc7_soma_pert'].mean().reset_index()
 	media_E7_por_cidade_sexo['Sexo_Cor'] = media_E7_por_cidade_sexo['Sexo'] + " - " + media_E7_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -1808,24 +2532,24 @@ elif page == 'Escala 7':
 	].copy()
 
 	# Mostrar gráfico (opcional)
-	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E7_csc"):
+	if st.checkbox("Marque aqui para visualizar a proporção de grupos de pertencimento, por cidade, sexo e cor da pele", key="graf_E7_csc"):
 	    if df_filtrado.empty:
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
 	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["E7_soma_pertenca"].mean()
+	        media_geral = df_filtrado["esc7_soma_pert"].mean()
 
 	        fig_media_E7 = px.bar(
 	            df_filtrado,
 	            x="Cidade",
-	            y="E7_soma_pertenca",
+	            y="esc7_soma_pert",
 	            color="Sexo_Cor",
 	            barmode="group",
-	            text=df_filtrado["E7_soma_pertenca"].round(2),
-	            title="Escala 7: Média do número dos grupos de pertencimento, por Cidade, Sexo e Cor da Pele",
+	            text=df_filtrado["esc7_soma_pert"].round(2),
+	            title="Escala 7: Proporção de grupos de pertencimento, por cidade, sexo e cor da pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "E7_soma_pertenca": "Média do número dos grupos de pertencimento",
+	                "esc7_soma_pert": "Proporção de grupos de pertencimento",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -1889,16 +2613,155 @@ elif page == 'Escala 7':
 	                st.rerun()
 
 	st.divider()
+	st.subheader('Proporção de pertencimento a grupos estigmatizados, por cidade, sexo e cor da pele')   
+
+
+# Calcular média por cidade, sexo e cor da pele
+
+# Calcular média
+	media_E7e_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc7_grup_estig'].mean().reset_index()
+	media_E7e_por_cidade_sexo['Sexo_Cor'] = media_E7e_por_cidade_sexo['Sexo'] + " - " + media_E7e_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E7e_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E7e_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E7e_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros baseados no estado
+	df_filtradoe = media_E7e_por_cidade_sexo[
+	    media_E7e_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E7e_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E7e_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+	   
+
+	# 🧮 Agrupamento e preparação dos dados
+	media_E7e_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc7_grup_estig'].mean().reset_index()
+	media_E7e_por_cidade_sexo['Sexo_Cor'] = media_E7e_por_cidade_sexo['Sexo'] + " - " + media_E7e_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E7e_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E7e_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E7e_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros
+	df_filtradoe = media_E7e_por_cidade_sexo[
+	    media_E7e_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E7e_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E7e_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+
+	# Mostrar gráfico (opcional)
+	if st.checkbox("Marque aqui para visualizar proporção de pertencimento a grupos estigmatizados, por cidade, sexo e cor da pele", key="graf_E7e_csc"):
+	    if df_filtradoe.empty:
+	        st.warning("Nenhum dado disponível para os filtros selecionados.")
+	    else:
+	        df_filtradoe["Sexo_Cor"] = df_filtradoe["Sexo"] + " - " + df_filtradoe["Cor_da_pele"]
+	        media_gerale = df_filtradoe["esc7_grup_estig"].mean()
+
+	        fig_media_E7e = px.bar(
+	            df_filtradoe,
+	            x="Cidade",
+	            y="esc7_grup_estig",
+	            color="Sexo_Cor",
+	            barmode="group",
+	            text=df_filtradoe["esc7_grup_estig"].round(2),
+	            title="Escala 7: Proporção de pertencimento a grupos estigmatizados, por cidade, sexo e cor da pele",
+	            labels={
+	                "Cidade": "Cidade",
+	                "esc7_grup_estig": "Proporção de pertencimento a grupos estigmatizados",
+	                "Sexo_Cor": "Sexo e Cor da Pele"
+	            }
+	        )
+
+	        fig_media_E7e.add_hline(
+	            y=media_gerale,
+	            line_dash="dot",
+	            line_color="red",
+	            annotation_text=f"Proporção de pertencimento a grupos estigmatizados: {media_gerale:.3f}",
+	            annotation_position="top left"
+	        )
+
+	        fig_media_E7e.update_layout(
+	            xaxis_title="Cidade",
+	            yaxis_title="Proporção de pertencimento a grupos estigmatizados (Escala 7)",
+	            legend_title="Sexo e Cor da Pele",
+	            plot_bgcolor="#F9F9F9",
+	            bargap=0.15,
+	        )
+
+	        fig_media_E7e.update_traces(
+	            textposition="outside",
+	            marker_line_width=0.5
+	        )
+
+	        st.plotly_chart(fig_media_E7e, use_container_width=True)
+
+	        # 🔽 Filtros exibidos apenas após o gráfico
+	        with st.expander("Ajuste os filtros abaixo", expanded=True):
+	            nova_cidade = st.multiselect(
+	                "Selecione a(s) cidade(s):",
+	                cidades,
+	                default=st.session_state["cidade_selecionada"],
+	                key="cidade_finale"
+	            )
+	            novo_sexo = st.multiselect(
+	                "Selecione o(s) sexo(s):",
+	                sexos,
+	                default=st.session_state["sexo_selecionado"],
+	                key="sexo_finale"
+	            )
+	            nova_cor = st.multiselect(
+	                "Selecione a(s) cor(es) da pele:",
+	                cores_pele,
+	                default=st.session_state["cor_selecionada"],
+	                key="cor_finale"
+	            )
+
+	            # Atualizar session_state e recarregar se necessário
+	            filtros_modificados = False
+	            if nova_cidade != st.session_state["cidade_selecionada"]:
+	                st.session_state["cidade_selecionada"] = nova_cidade
+	                filtros_modificados = True
+	            if novo_sexo != st.session_state["sexo_selecionado"]:
+	                st.session_state["sexo_selecionado"] = novo_sexo
+	                filtros_modificados = True
+	            if nova_cor != st.session_state["cor_selecionada"]:
+	                st.session_state["cor_selecionada"] = nova_cor
+	                filtros_modificados = True
+	            if filtros_modificados:
+	                st.rerun()
+
+
+
+
+	st.divider()
 	st.subheader('Diagrama de dispersão entre a variável idade, a escala selecionada e as variáveis cor da pele e o sexo do participante.')
 	
 
 	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = dados.drop(['Cidade'], axis=1)
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E7 = [
-	    'E7_soma_pertenca', 'Escala_7_1', 'Escala_7_2',
+	    'esc7_soma_pert', 'esc7_grup_estig', 'Escala_7_1', 'Escala_7_2',
 	    'Escala_7_3', 'Escala_7_4', 'Escala_7_5',
 	    'Escala_7_6', 'Escala_7_7', 'Escala_7_8', 'Escala_7_9',
 	    'Escala_7_10', 'Escala_7_11', 'Escala_7_12', 'Escala_7_13', 
@@ -1973,23 +2836,26 @@ elif page == 'Escala 7':
 elif page == 'Escala 8':
 	st.subheader('Interações intergrupais ocorridas no ambiente escolar')
 
-	dados = pd.read_csv('bd_oppes.csv')
-	med_e8 = dados['E8_qualid_relacoes'].mean()
+	dados = pd.read_csv('oppes_versao2.csv')
+	med_e8 = dados['esc8_rel_intergrup'].mean()
 	med_e8_1 = dados['Escala_8_1'].mean()
 	med_e8_2 = dados['Escala_8_2'].mean()
 	med_e8_3 = dados['Escala_8_3'].mean()
 	med_e8_4 = dados['Escala_8_4'].mean()
 	
 	
+	st.markdown(f'**Média geral da medida de interações intergrupais ocorridas no ambiente escolar: {med_e8:.3f}**')
 
-
-	st.markdown(f'**Média geral: {med_e8:.3f}**')
+	
 
 	st.divider()
 	st.subheader('Média de cada item da escala')
 
 
-	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 8", key="med_E8"):
+	if st.checkbox ("Marque aqui para visualizar a média de cada item da escala de interações intergrupais ocorridas no ambiente escolar", key="med_E8"):
+
+		st.image ('q8.png')
+		st.markdown(f'**Média geral da medida de interações intergrupais ocorridas no ambiente escolar: {med_e8:.3f}**')
 		st.write(f'1 = {med_e8_1:.3f} (Alunos(as) de diferentes grupos (raças, etnias, religiões, orientação sexual, gênero, pessoas com deficiência etc.) andam juntos)')
 		st.write(f'2 = {med_e8_2:.3f} (Alunos(as) de diferentes grupos (raças, etnias, religiões, orientação sexual, gênero, pessoas com deficiência etc.) confiam uns nos outros)')
 		st.write(f'3 = {med_e8_3:.3f} (Alunos(as) de diferentes grupos (raças, etnias religiões, orientação sexual, gênero, pessoas com deficiência etc.) se dão bem)')
@@ -1998,13 +2864,13 @@ elif page == 'Escala 8':
 		
 
 	st.divider()
-	st.subheader('Média da escala, por cidade, sexo e cor da pele')   
+	st.subheader('Média das interações intergrupais ocorridas no ambiente escolar, por cidade, sexo e cor da pele')   
 
 
 # Calcular média por cidade, sexo e cor da pele
 
 # Calcular média
-	media_E8_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E8_qualid_relacoes'].mean().reset_index()
+	media_E8_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc8_rel_intergrup'].mean().reset_index()
 	media_E8_por_cidade_sexo['Sexo_Cor'] = media_E8_por_cidade_sexo['Sexo'] + " - " + media_E8_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -2029,7 +2895,7 @@ elif page == 'Escala 8':
 	   
 
 	# 🧮 Agrupamento e preparação dos dados
-	media_E8_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E8_qualid_relacoes'].mean().reset_index()
+	media_E8_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc8_rel_intergrup'].mean().reset_index()
 	media_E8_por_cidade_sexo['Sexo_Cor'] = media_E8_por_cidade_sexo['Sexo'] + " - " + media_E8_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -2053,24 +2919,24 @@ elif page == 'Escala 8':
 	].copy()
 
 	# Mostrar gráfico (opcional)
-	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E8_csc"):
+	if st.checkbox("Marque aqui para visualizar o gráfico das interações intergrupais ocorridas no ambiente escolar, por cidade, sexo e cor da pele", key="graf_E8_csc"):
 	    if df_filtrado.empty:
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
 	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["E8_qualid_relacoes"].mean()
+	        media_geral = df_filtrado["esc8_rel_intergrup"].mean()
 
 	        fig_media_E8 = px.bar(
 	            df_filtrado,
 	            x="Cidade",
-	            y="E8_qualid_relacoes",
+	            y="esc8_rel_intergrup",
 	            color="Sexo_Cor",
 	            barmode="group",
-	            text=df_filtrado["E8_qualid_relacoes"].round(2),
-	            title="Escala 1: Média das interações intergrupais, por Cidade, Sexo e Cor da Pele",
+	            text=df_filtrado["esc8_rel_intergrup"].round(2),
+	            title="Escala 1: Média das interações intergrupais ocorridas no ambiente escolar, por cidade, sexo e cor da pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "E8_qualid_relacoes": "Média das interações intergrupais",
+	                "esc8_rel_intergrup": "Média das interações intergrupais ocorridas no ambiente escolar",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -2085,7 +2951,7 @@ elif page == 'Escala 8':
 
 	        fig_media_E8.update_layout(
 	            xaxis_title="Cidade",
-	            yaxis_title="Média das interações intergrupais (Escala 8)",
+	            yaxis_title="Média das interações intergrupais ocorridas no ambiente escolar (Escala 8)",
 	            legend_title="Sexo e Cor da Pele",
 	            plot_bgcolor="#F9F9F9",
 	            bargap=0.15,
@@ -2138,12 +3004,12 @@ elif page == 'Escala 8':
 	
 
 	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = dados.drop(['Cidade'], axis=1)
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E8 = [
-	    'E8_qualid_relacoes', 'Escala_8_1', 'Escala_8_2',
+	    'esc8_rel_intergrup', 'Escala_8_1', 'Escala_8_2',
 	    'Escala_8_3', 'Escala_8_4'
 	]
 	if st.checkbox ("Marque aqui para selecionar as variáveis e visualizar os resultados ", key="graf_reg_esc8"):
@@ -2212,11 +3078,11 @@ elif page == 'Escala 8':
 
 
 elif page == 'Escala 9':
-	st.subheader('Situações de interações entre os grupos nas escolas')
-	dados = pd.read_csv('bd_oppes.csv')
+	st.subheader('Inclusão da diversaidade na escola')
+	dados = pd.read_csv('oppes_versao2.csv')
 	#dados = load_dados()
 
-	med_e9 = dados['E9_trat_desig_grupos'].mean()
+	med_e9 = dados['esc9_inc_diversid'].mean()
 	med_e9_1 = dados['Escala_9_1'].mean()
 	med_e9_2 = dados['Escala_9_2'].mean()
 	med_e9_3 = dados['Escala_9_3'].mean()
@@ -2227,13 +3093,15 @@ elif page == 'Escala 9':
 	med_e9_8 = dados['Escala_9_8'].mean()
 	med_e9_9 = dados['Escala_9_9'].mean()
 
-	st.markdown(f'**Média geral: {med_e9:.3f}**')
+	st.markdown(f'**Média geral da inclusão da diversidade na escola: {med_e9:.3f}**')
 
 	st.divider()
 	st.subheader('Média de cada item da escala')
 
 
 	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 9", key="med_E9"):
+		st.image ('q9.png')
+		st.markdown(f'**Média geral da inclusão da diversidade na escola: {med_e9:.3f}**')
 		st.write(f'1 = {med_e9_1:.3f} (Os(as) professores(as) e direção/coordenação tratam os(as) alunos(as) de diferentes grupos (raças, etnias, religiões, orientação sexual, gênero, pessoas com deficiência etc.) de forma justa e igualitária)')
 		st.write(f'2 = {med_e9_2:.3f} (Os grupos que VOCÊ faz parte (racial, étnico, religioso, de orientação sexual, gênero, pessoas com deficiência etc) são vistos de forma negativa)')
 		st.write(f'3 = {med_e9_3:.3f} (Os(as) professores(as) são preconceituosos com diferentes grupos (raças, etnias, religiões, orientação sexual, gênero, pessoas com deficiência etc.))')
@@ -2245,13 +3113,13 @@ elif page == 'Escala 9':
 		st.write(f'9 = {med_e9_9:.3f} (Você tem oportunidades de aprender sobre a cultura de diferentes grupos (pessoas de outras raças, etnias, religião, orientação sexual, de gênero, pessoas com deficiência etc.)')
 
 	st.divider()
-	st.subheader('Média da escala, por cidade, sexo e cor da pele')   
+	st.subheader('Média da escala de inclusão da diversidade na escola, por cidade, sexo e cor da pele')   
 
 
 # Calcular média por cidade, sexo e cor da pele
 
 # Calcular média
-	media_E9_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E9_trat_desig_grupos'].mean().reset_index()
+	media_E9_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc9_inc_diversid'].mean().reset_index()
 	media_E9_por_cidade_sexo['Sexo_Cor'] = media_E9_por_cidade_sexo['Sexo'] + " - " + media_E9_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -2276,7 +3144,7 @@ elif page == 'Escala 9':
 	   
 
 	# 🧮 Agrupamento e preparação dos dados
-	media_E9_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E9_trat_desig_grupos'].mean().reset_index()
+	media_E9_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc9_inc_diversid'].mean().reset_index()
 	media_E9_por_cidade_sexo['Sexo_Cor'] = media_E9_por_cidade_sexo['Sexo'] + " - " + media_E9_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -2300,24 +3168,24 @@ elif page == 'Escala 9':
 	].copy()
 
 	# Mostrar gráfico (opcional)
-	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E9_csc"):
+	if st.checkbox("Marque aqui para visualizar o gráfico das médias de inclusão da diversidade na escola, por cidade, sexo e cor da pele", key="graf_E9_csc"):
 	    if df_filtrado.empty:
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
 	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["E9_trat_desig_grupos"].mean()
+	        media_geral = df_filtrado["esc9_inc_diversid"].mean()
 
 	        fig_media_E9 = px.bar(
 	            df_filtrado,
 	            x="Cidade",
-	            y="E9_trat_desig_grupos",
+	            y="esc9_inc_diversid",
 	            color="Sexo_Cor",
 	            barmode="group",
-	            text=df_filtrado["E9_trat_desig_grupos"].round(2),
-	            title="Escala 9: Média de interações entre os grupos, por Cidade, Sexo e Cor da Pele",
+	            text=df_filtrado["esc9_inc_diversid"].round(2),
+	            title="Escala 9: Média de Inclusão da diversidade na escola, por cidade, sexo e cor da pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "E9_trat_desig_grupos": "Média das interações entre os grupos",
+	                "esc9_inc_diversid": "Média de inclusão da diversidade na escola",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -2381,16 +3249,16 @@ elif page == 'Escala 9':
 	                st.rerun()
 
 	st.divider()
-	st.subheader('Diagrama de dispersão entre a variável idade, a escala selecionada e as variáveis cor da pele e o sexo do participante.')
+	st.subheader('Diagrama de dispersão entre a variável idade, a inclusão da diversidade na escola e as variáveis cor da pele e o sexo do participante.')
 	
 
 	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = dados.drop(['Cidade'], axis=1)
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E9 = [
-	    'E9_trat_desig_grupos', 'Escala_9_1', 'Escala_9_2',
+	    'esc9_inc_diversid', 'Escala_9_1', 'Escala_9_2',
 	    'Escala_9_3', 'Escala_9_4', 'Escala_9_5',
 	    'Escala_9_6', 'Escala_9_7', 
 	    'Escala_9_8', 'Escala_9_9'
@@ -2460,8 +3328,8 @@ elif page == 'Escala 9':
 elif page == 'Escala 10':
 	st.subheader('Estados emocionais negativos relatados')
 
-	dados = pd.read_csv('bd_oppes.csv')
-	med_e10 = dados['E10_est_emoc_neg'].mean()
+	dados = pd.read_csv('oppes_versao2.csv')
+	med_e10 = dados['esc10_est_emoc_neg'].mean()
 	med_e10_1 = dados['Escala_10_1'].mean()
 	med_e10_2 = dados['Escala_10_2'].mean()
 	med_e10_3 = dados['Escala_10_3'].mean()
@@ -2469,13 +3337,15 @@ elif page == 'Escala 10':
 	med_e10_5 = dados['Escala_10_5'].mean()
 	med_e10_6 = dados['Escala_10_6'].mean()
 	
-	st.markdown(f'**Média geral: {med_e10:.3f}**')
+	st.markdown(f'**Média geral da escala de estados emocionais negativos: {med_e10:.3f}**')
 
 	st.divider()
 	st.subheader('Média de cada item da escala')
 
 
 	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 10", key="med_e10"):
+		st.image ('q10.png')
+		st.markdown(f'**Média geral da escala de estados emocionais negativos: {med_e10:.3f}**')
 		st.write(f'1 = {med_e10_1:.3f} (Pensamentos de acabar com a vida.)')
 		st.write(f'2 = {med_e10_2:.3f} (Sentir-se sozinha(o))')
 		st.write(f'3 = {med_e10_3:.3f} (Sentir-se triste)')
@@ -2491,7 +3361,7 @@ elif page == 'Escala 10':
 # Calcular média por cidade, sexo e cor da pele
 
 # Calcular média
-	media_E10_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E10_est_emoc_neg'].mean().reset_index()
+	media_E10_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc10_est_emoc_neg'].mean().reset_index()
 	media_E10_por_cidade_sexo['Sexo_Cor'] = media_E10_por_cidade_sexo['Sexo'] + " - " + media_E10_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -2516,7 +3386,7 @@ elif page == 'Escala 10':
 	   
 
 	# 🧮 Agrupamento e preparação dos dados
-	media_E10_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E10_est_emoc_neg'].mean().reset_index()
+	media_E10_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc10_est_emoc_neg'].mean().reset_index()
 	media_E10_por_cidade_sexo['Sexo_Cor'] = media_E10_por_cidade_sexo['Sexo'] + " - " + media_E10_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -2540,24 +3410,24 @@ elif page == 'Escala 10':
 	].copy()
 
 	# Mostrar gráfico (opcional)
-	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E10_csc"):
+	if st.checkbox("Marque aqui para visualizar o gráfico das médias da escala de estados emocionais negativos, por cidade, sexo e cor da pele", key="graf_E10_csc"):
 	    if df_filtrado.empty:
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
 	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["E10_est_emoc_neg"].mean()
+	        media_geral = df_filtrado["esc10_est_emoc_neg"].mean()
 
 	        fig_media_E10 = px.bar(
 	            df_filtrado,
 	            x="Cidade",
-	            y="E10_est_emoc_neg",
+	            y="esc10_est_emoc_neg",
 	            color="Sexo_Cor",
 	            barmode="group",
-	            text=df_filtrado["E10_est_emoc_neg"].round(2),
-	            title="Escala 10: Média dos estados emocionais negativos, por Cidade, Sexo e Cor da Pele",
+	            text=df_filtrado["esc10_est_emoc_neg"].round(2),
+	            title="Escala 10: Média dos estados emocionais negativos, por cidade, sexo e cor da pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "E10_est_emoc_neg": "Média dos estados emocionais negativos",
+	                "esc10_est_emoc_neg": "Média dos estados emocionais negativos",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -2621,16 +3491,16 @@ elif page == 'Escala 10':
 	                st.rerun()
 
 	st.divider()
-	st.subheader('Diagrama de dispersão entre a variável idade, a escala selecionada e as variáveis cor da pele e o sexo do participante.')
+	st.subheader('Diagrama de dispersão entre a variável idade, a escala de estados emocionais negativosselecionada e as variáveis cor da pele e o sexo do participante.')
 	
 
 	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = dados.drop(['Cidade'], axis=1)
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E10 = [
-	    'E10_est_emoc_neg', 'Escala_10_1', 'Escala_10_2',
+	    'esc10_est_emoc_neg', 'Escala_10_1', 'Escala_10_2',
 	    'Escala_10_3', 'Escala_10_4', 'Escala_10_5',
 	    'Escala_10_6'
 	]
@@ -2697,8 +3567,8 @@ elif page == 'Escala 10':
 elif page == 'Escala 11':
 	st.subheader('Relatos dos estudantes sobre a satisfação com a vida')
 
-	dados = pd.read_csv('bd_oppes.csv')
-	med_e11 = dados['E11_satisf_vida'].mean()
+	dados = pd.read_csv('oppes_versao2.csv')
+	med_e11 = dados['esc11_satisf_vida'].mean()
 	med_e11_1 = dados['Escala_11_1'].mean()
 	med_e11_2 = dados['Escala_11_2'].mean()
 	med_e11_3 = dados['Escala_11_3'].mean()
@@ -2709,10 +3579,13 @@ elif page == 'Escala 11':
 	st.markdown(f'**Média geral: {med_e11:.3f}**')
 
 	st.divider()
-	st.subheader('Média de cada item da escala')
+	st.subheader('Média de cada item da escala de satisfação com a vida')
 
 
 	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 10", key="med_e11"):
+		st.image ('q11.png')
+		st.markdown(f'**Média geral da medida de satisfação com a vida: {med_e11:.3f}**')
+
 		st.write(f'1 = {med_e11_1:.3f} (A minha vida está próxima do meu ideal)')
 		st.write(f'2 = {med_e11_2:.3f} (As minhas condições de vida são excelentes)')
 		st.write(f'3 = {med_e11_3:.3f} (Eu estou satisfeita (o) com a minha vida)')
@@ -2727,7 +3600,7 @@ elif page == 'Escala 11':
 # Calcular média por cidade, sexo e cor da pele
 
 # Calcular média
-	media_E11_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E11_satisf_vida'].mean().reset_index()
+	media_E11_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc11_satisf_vida'].mean().reset_index()
 	media_E11_por_cidade_sexo['Sexo_Cor'] = media_E11_por_cidade_sexo['Sexo'] + " - " + media_E11_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -2752,7 +3625,7 @@ elif page == 'Escala 11':
 	   
 
 	# 🧮 Agrupamento e preparação dos dados
-	media_E11_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['E11_satisf_vida'].mean().reset_index()
+	media_E11_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc11_satisf_vida'].mean().reset_index()
 	media_E11_por_cidade_sexo['Sexo_Cor'] = media_E11_por_cidade_sexo['Sexo'] + " - " + media_E11_por_cidade_sexo['Cor_da_pele']
 
 	# Valores únicos
@@ -2776,24 +3649,24 @@ elif page == 'Escala 11':
 	].copy()
 
 	# Mostrar gráfico (opcional)
-	if st.checkbox("Marque aqui para visualizar o gráfico das médias, por cidade, sexo e cor da pele", key="graf_E11_csc"):
+	if st.checkbox("Marque aqui para visualizar o gráfico das médias de satisfação com a vida, por cidade, sexo e cor da pele", key="graf_E11_csc"):
 	    if df_filtrado.empty:
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
 	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["E11_satisf_vida"].mean()
+	        media_geral = df_filtrado["esc11_satisf_vida"].mean()
 
 	        fig_media_E11 = px.bar(
 	            df_filtrado,
 	            x="Cidade",
-	            y="E11_satisf_vida",
+	            y="esc11_satisf_vida",
 	            color="Sexo_Cor",
 	            barmode="group",
-	            text=df_filtrado["E11_satisf_vida"].round(2),
-	            title="Escala 10: Média de satisfação com a vida, por Cidade, Sexo e Cor da Pele",
+	            text=df_filtrado["esc11_satisf_vida"].round(2),
+	            title="Escala 10: Média de satisfação com a vida, por cidade, sexo e cor da pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "E11_satisf_vida": "Média de satisfação com a vida",
+	                "esc11_satisf_vida": "Média de satisfação com a vida",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -2802,7 +3675,7 @@ elif page == 'Escala 11':
 	            y=media_geral,
 	            line_dash="dot",
 	            line_color="red",
-	            annotation_text=f"Média Geral da Escala 11: {media_geral:.3f}",
+	            annotation_text=f"Média Geral da escala de satisfação com a vida : {media_geral:.3f}",
 	            annotation_position="top left"
 	        )
 
@@ -2861,12 +3734,12 @@ elif page == 'Escala 11':
 	
 
 	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 	dados = dados.drop(['Cidade'], axis=1)
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E11 = [
-	    'E11_satisf_vida', 'Escala_11_1', 'Escala_11_2',
+	    'esc11_satisf_vida', 'Escala_11_1', 'Escala_11_2',
 	    'Escala_11_3', 'Escala_11_4', 'Escala_11_5'
 	]
 	if st.checkbox ("Marque aqui para selecionar as variáveis e visualizar os resultados ", key="graf_reg_esc11"):
@@ -2933,10 +3806,10 @@ elif page == 'Modelos de regressão':
 	st.write("Selecione variáveis para regressão, com remoção de outliers e visualização dos resultados em escalas padronizada e original.")
 
 	# Carregamento dos dados
-	dados = pd.read_csv('bd_oppes.csv')
+	dados = pd.read_csv('oppes_versao2.csv')
 
 	# Seleção apenas das colunas desejadas
-	colunas_desejadas = ['E1_ameacas', 'E2_situacoes_estresse', 'E3_4_agentes', 'E5_disc_pessoal', 'E7_soma_pertenca', 'E7_soma_pertenca', 'E8_qualid_relacoes', 'E9_trat_desig_grupos', 'E10_est_emoc_neg', 'E11_satisf_vida']
+	colunas_desejadas = ['esc1_Pertencimento', 'esc2_sit_alunos', 'esc2_sit_escola', 'esc3_4_conflitos', 'esc5_bull_alvo', 'esc5_bull_agente', 'esc5_bull_testem', 'esc6_loc_agr_esc', 'esc6_loc_agr_imed', 'esc6_loc_agr_internet', 'esc8_rel_intergrup', 'esc9_inc_diversid', 'esc10_est_emoc_neg', 'esc11_satisf_vida', 'serie', 'idade', 'Renda', 'Freq_Redes', 'Tempo_Gasto_Redes']
 	colunas_disponiveis = [col for col in colunas_desejadas if col in dados.columns]
 
 	# Interface de seleção
@@ -2949,18 +3822,32 @@ elif page == 'Modelos de regressão':
 
 	# Descrições das variáveis
 	descricoes = {
-	    'E1_ameacas': 'E1_ameacas: Frequência de exposição a ameaças no ambiente escolar.',
-	    'E2_situacoes_estresse': 'E2_situacoes_estresse: Número de situações estressantes enfrentadas.',
-	    'E3_4_agentes': 'E3_4_agentes: Ação dos professores e da escola.',
-	    'E5_disc_pessoal': 'E5_disc_pessoal: Qualidade da disciplina pessoal observada.',
-	    'E6_locais': 'E6_locais: Avaliação da segurança e conforto dos locais da escola.',
-	    'E7_soma_pertenca': 'E7_soma_pertenca: Soma dos grupos de pertencimento.',
-	    'E8_qualid_relacoes': 'E8_qualid_relacoes: Qualidade das relações entre os grupos.',
-	    'E9_trat_desig_grupos': 'E9_trat_desig_grupos: Tratamento desigual entre os grupos.',
-	    'E10_est_emoc_neg': 'E10_est_emoc_neg: Estados emocionais negativos.',
-	    'E11_satisf_vida': 'E11_satisf_vida: Satisfação com a vida.'
+	    'esc1_Pertencimento': 'Sentimento de pertencimento ao ambiente escolar.',
+	    'esc2_sit_alunos': 'Situações estressantes relacionadas aos colegas.',
+	    'esc2_sit_escola': 'Situações estressantes relacionadas ao ambiente escolar.',
+	    'esc3_4_conflitos': 'Ação dos professores e da escola frente aos conflitos.',
+	    'esc5_bull_alvo': 'Alvo bulling no ambiente escolar.',
+	    'esc5_bull_agente': 'Praticou bulling no ambiente escolar.',
+	    'esc5_bull_testem': 'Testemunhou bulling no ambiente escolar.',
+	    'esc6_loc_agr_esc': 'Agressões sofridas no ambiente escolar.',
+	    'esc6_loc_agr_imed': 'Agressões sofridas nas imediações da escola.',
+	    'esc6_loc_agr_internet': 'Agressões sofridas na internet.',
+	    'esc7_soma_pert': 'Soma dos grupos de pertencimento.',
+	    'esc7_grup_estig': 'Proporção de grupos estigmatizados que pertence.',
+	    'esc8_rel_intergrup': 'Qualidade das relações entre os grupos no ambiente escolar.',
+	    'esc9_inc_diversid': 'Reconhece relações positivas entre os grupos.',
+	    'esc10_est_emoc_neg': 'Medida de estados emocionais negativos.',
+	    'esc11_satisf_vida': 'Medida de satisfação com a vida.',
+	    'serie': 'Série escolar em que se encontra.',
+	    'idade': 'Idade informada.',
+	    'Renda': 'Renda familiar informada (medida ordinal)',
+	    'Freq_Redes': 'Medida de frequência em redes sociais.',
+	    'Tempo_Gasto_Redes': 'Medida de tempo gasto em redes sociais em redes sociais (medida ordinal).'
 
 	}
+
+
+
 
 	# Mostrar descrição da variável dependente
 	st.markdown(f"**Descrição da variável dependente:** {descricoes.get(variavel_dependente, 'Sem descrição disponível.')}")
