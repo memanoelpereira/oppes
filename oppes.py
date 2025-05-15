@@ -87,7 +87,7 @@ if page == 'Geral':
 	st.divider()
 #-------------  médias e gráficos das escalas, por cidade
 
-	st.subheader('Escala 1: Sentimento de não-pertença à escola')
+	st.subheader('Escala 1: Sentimento de pertencimento à escola')
 
 	dados = load_dados()
 
