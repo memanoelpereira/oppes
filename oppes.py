@@ -3995,9 +3995,9 @@ else:
 	cidades = {
 	    "de todos os participantes": "rede_semantica_palavras.png",
 	    "dos participantes de Aracaju": "rede_aracaju.png",
-	    "dos participantes de Campos de Brito": "rede_campos_brito.png",
+	    "dos participantes de Campo de Brito": "rede_campos_brito.png",
 	    "dos participantes de Canindé do São Francisco": "rede_caninde.png",
-	    "dos participantes de Nossa Senhora do Carmo": "rede_carmo.png",
+	    "dos participantes de Carmópolis": "rede_carmo.png",
 	    "dos participantes de Nossa Senhora das Dores": "rede_dores.png",
 	    "dos participantes de Estância": "rede_estancia.png",
 	    "dos participantes de Neópolis": "rede_neopolis.png",
