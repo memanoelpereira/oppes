@@ -22,7 +22,7 @@ from statsmodels.stats.multicomp import MultiComparison
 import pingouin as pg
 
 
-st.image('logo_oppes.png')
+st.image('logos.png')
 st.header('Resultados do diagnóstico')
 
 st.sidebar.title ('Navegação')
@@ -38,7 +38,7 @@ def load_dados():
 dados = load_dados()
 
 # limpar colunas sem uso
-dados = dados.drop(['Concorda', 'DRs', 'etapa', 'Violenc_escolas'], axis=1)
+##dados = dados.drop(['Concorda', 'DRs', 'etapa', 'Violenc_escolas'], axis=1)
 
 #st.write(dados)
 
@@ -60,9 +60,9 @@ if page == 'Geral':
 	    'esc2_sit_alunos': 'Situações estressantes relacionadas aos colegas.',
 	    'esc2_sit_escola': 'Situações estressantes relacionadas ao ambiente escolar.',
 	    'esc3_4_conflitos': 'Ação dos professores e da escola frente aos conflitos.',
-	    'esc5_bull_alvo': 'Alvo bulling no ambiente escolar.',
-	    'esc5_bull_agente': 'Praticou bulling no ambiente escolar.',
-	    'esc5_bull_teste': 'Testemunhou bulling no ambiente escolar.',
+	    'esc5_bull_alvo': 'Alvo bullying no ambiente escolar.',
+	    'esc5_bull_agente': 'Praticou bullying no ambiente escolar.',
+	    'esc5_bull_teste': 'Testemunhou bullying no ambiente escolar.',
 	    'esc6_loc_agr_esc': 'Agressões sofridas no ambiente escolar.',
 	    'esc6_loc_agr_imed': 'Agressões sofridas nas imediações da escola.',
 	    'esc6_loc_agr_internet': 'Agressões sofridas na internet.',
@@ -87,7 +87,7 @@ if page == 'Geral':
 	st.divider()
 #-------------  médias e gráficos das escalas, por cidade
 
-	st.subheader('Escala 1: Sentimento de pertencimento à escola')
+	st.subheader('Escala 1: Sentimento de pertença à escola')
 
 	dados = load_dados()
 
@@ -248,11 +248,11 @@ if page == 'Geral':
                         x="Cidade", 
                         y="Valor", 
                         color="Tipo",  # Diferenciar pelas diferentes variáveis
-                        title="Média das Ameaças Individuais: Bulling, Estados emocionais negativos e Satisfação com a vida",
+                        title="Média das Ameaças Individuais: Bullying, Estados emocionais negativos e Satisfação com a vida",
                         labels={"Valor": "Média do Valor", "Cidade": "Cidade"})  # Ajustando os rótulos
 
 
-	dados_agrupados_ind = dados.groupby('Cidade')[['esc5_bull_alvo', 'esc5_bull_alvo', 'esc5_bull_testem', 'esc10_est_emoc_neg', 'esc11_satisf_vida']].mean().round(3)
+	dados_agrupados_ind = dados.groupby('Cidade')[['esc5_bull_alvo', 'esc5_bull_agente', 'esc5_bull_testem', 'esc10_est_emoc_neg', 'esc11_satisf_vida']].mean().round(3)
 	if st.checkbox ("Marque aqui para visualizar as médias, por cidade", key="med_ind"):
 		st.write(dados_agrupados_ind)
 
@@ -445,15 +445,15 @@ elif page == 'Escala 1':
 	#dados = load_dados()
 
 	med_e1 = dados['esc1_Pertencimento'].mean()
-	med_e1_1 = dados['esc1_1'].mean()
-	med_e1_2 = dados['esc_1_2'].mean()
-	med_e1_3 = dados['esc_1_3'].mean()
-	med_e1_4 = dados['esc_1_4'].mean()
-	med_e1_5 = dados['esc_1_5'].mean()
-	med_e1_6 = dados['esc_1_6'].mean()
-	med_e1_7 = dados['esc_1_7'].mean()
-	med_e1_8 = dados['esc_1_8'].mean()
-	med_e1_9 = dados['esc_1_9'].mean()
+	med_e1_1 = dados['Escala_1_1'].mean()
+	med_e1_2 = dados['Escala_1_2'].mean()
+	med_e1_3 = dados['Escala_1_3'].mean()
+	med_e1_4 = dados['Escala_1_4'].mean()
+	med_e1_5 = dados['Escala_1_5'].mean()
+	med_e1_6 = dados['Escala_1_6'].mean()
+	med_e1_7 = dados['Escala_1_7'].mean()
+	med_e1_8 = dados['Escala_1_8'].mean()
+	med_e1_9 = dados['Escala_1_9'].mean()
 
 
 	st.divider()
@@ -1371,7 +1371,7 @@ elif page == 'Escalas 3 e 4':
 # # ----------------------------Escala 5-----------------------------------------------
 # # ----------------------------Escala 5-----------------------------------------------
 elif page == 'Escala 5':
-	st.subheader('Situações de situações de bulling ocorridas nas escolas')
+	st.subheader('Situações de situações de bullying ocorridas nas escolas')
 	dados = pd.read_csv('oppes_versao2.csv')
 	med_e5al = dados['esc5_bull_alvo'].mean()
 	med_e5ag = dados['esc5_bull_agente'].mean()
@@ -1385,9 +1385,9 @@ elif page == 'Escala 5':
 	med_e5_7 = dados['Escala_6_7'].mean()
 	
 
-	st.markdown(f'**Alvo do bulling: {med_e5al:.3f}**')
-	st.markdown(f'**Agente do bulling: {med_e5ag:.3f}**')
-	st.markdown(f'**Testemunhou o bulling: {med_e5te:.3f}**')
+	st.markdown(f'**Alvo do bullying: {med_e5al:.3f}**')
+	st.markdown(f'**Agente do bullying: {med_e5ag:.3f}**')
+	st.markdown(f'**Testemunhou o bullying: {med_e5te:.3f}**')
 
 	st.divider()
 	st.subheader('Média de cada item da escala 5')
@@ -1395,23 +1395,23 @@ elif page == 'Escala 5':
 
 	if st.checkbox ("Marque aqui para visualizar a média de cada item da Escala 5", key="med_E5"):
 		st.image ('q5.png')
-		st.markdown(f'**Alvo do bulling: {med_e5al:.3f}**')
+		st.markdown(f'**Alvo do bullying: {med_e5al:.3f}**')
 		st.write(f'1 = {med_e5_1:.3f} (Eu fui agredida(o), maltratada(o), intimidada(o), ameaçada(o), excluída(o) ou humilhada(o) por algum(a) colega da escola ou professor)')
 		st.write(f'2 = {med_e5_2:.3f} (Eu fui provocada(o), zoada(o), apelidada(o) ou irritada(o) por algum(a) colega da escola ou professor)')
 		st.write(f'3 = {med_e5_3:.3f} (Eu tenho medo de alguns alunos)')
 
-		st.markdown(f'**Agente do bulling: {med_e5ag:.3f}**')
+		st.markdown(f'**Agente do bullying: {med_e5ag:.3f}**')
 		
 		st.write(f'4 = {med_e5_4:.3f} (Eu agredi, maltratei, intimidei, ameacei, exclui ou humilhei algum(a) colega ou professor(a) da escola)')
 		st.write(f'5 = {med_e5_5:.3f} (Eu provoquei, zoei, coloquei apelidos ou irritei algum(a) colega ou professor(a) da escola)')
 
-		st.markdown(f'**Testemunhou o bulling: {med_e5te:.3f}**')
+		st.markdown(f'**Testemunhou o bullying: {med_e5te:.3f}**')
 		st.write(f'6 = {med_e5_6:.3f} (Eu vi alguém sendo agredida(o), maltratada(o), intimidada(o), ameaçada(o), excluída(o) ou humilhada(o) por algum(a) colega ou professor(a) da escola)')
 		st.write(f'7 = {med_e5_7:.3f} (Eu vi alguém sendo provocada(o), zoada(o), recebendo apelidos ouirritada(o) por algum(a) colega ou professor(a) da escola)')
 		
 
 	st.divider()
-	st.subheader('Média de ser alvo de bulling, por cidade, sexo e cor da pele')   
+	st.subheader('Média de ser alvo de bullying, por cidade, sexo e cor da pele')   
 
 
 # Calcular média por cidade, sexo e cor da pele
@@ -1546,7 +1546,7 @@ elif page == 'Escala 5':
 	            if filtros_modificados:
 	                st.rerun()
 
-	st.subheader('Média de ser agente de bulling, por cidade, sexo e cor da pele')   
+	st.subheader('Média de ser agente de bullying, por cidade, sexo e cor da pele')   
 
 
 	# Calcular média por cidade, sexo e cor da pele
@@ -1615,10 +1615,10 @@ elif page == 'Escala 5':
 	            color="Sexo_Cor",
 	            barmode="group",
 	            text=df_filtradoag["esc5_bull_agente"].round(2),
-	            title="Escala 1: Média de ter praticado bulling, por Cidade, Sexo e Cor da Pele",
+	            title="Escala 1: Média de ter praticado bullying, por Cidade, Sexo e Cor da Pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "esc5_bull_alvo": "Média de de ter spraticado bulling",
+	                "esc5_bull_alvo": "Média de de ter praticado bullying",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -1627,13 +1627,13 @@ elif page == 'Escala 5':
 	            y=media_geral_ag,
 	            line_dash="dot",
 	            line_color="red",
-	            annotation_text=f"Média Geral de ter praticado bulling: {media_geral_ag:.3f}",
+	            annotation_text=f"Média Geral de ter praticado bullying: {media_geral_ag:.3f}",
 	            annotation_position="top left"
 	        )
 
 	        fig_media_E5ag.update_layout(
 	            xaxis_title="Cidade",
-	            yaxis_title="Média de ter praticado bulling (Escala 5)",
+	            yaxis_title="Média de ter praticado bullying (Escala 5)",
 	            legend_title="Sexo e Cor da Pele",
 	            plot_bgcolor="#F9F9F9",
 	            bargap=0.15,
@@ -1681,7 +1681,7 @@ elif page == 'Escala 5':
 	            if filtros_modificados:
 	                st.rerun()
 
-	st.subheader('Média de ser testemunha de bulling, por cidade, sexo e cor da pele')   
+	st.subheader('Média de ser testemunha de bullying, por cidade, sexo e cor da pele')   
 
 
 # Calcular média por cidade, sexo e cor da pele
@@ -1750,7 +1750,7 @@ elif page == 'Escala 5':
 	            color="Sexo_Cor",
 	            barmode="group",
 	            text=df_filtradote["esc5_bull_testem"].round(2),
-	            title="Escala 5: Média de ter testemunhado bulling, por Cidade, Sexo e Cor da Pele",
+	            title="Escala 5: Média de ter testemunhado bullying, por Cidade, Sexo e Cor da Pele",
 	            labels={
 	                "Cidade": "Cidade",
 	                "esc5_bull_testem": "Média de de ter testemunhado bulling",
@@ -1762,13 +1762,13 @@ elif page == 'Escala 5':
 	            y=media_geral_te,
 	            line_dash="dot",
 	            line_color="red",
-	            annotation_text=f"Média Geral de ter testemunhado bulling: {media_geral_te:.3f}",
+	            annotation_text=f"Média Geral de ter testemunhado bullying: {media_geral_te:.3f}",
 	            annotation_position="top left"
 	        )
 
 	        fig_media_E5te.update_layout(
 	            xaxis_title="Cidade",
-	            yaxis_title="Média de ter testemunhado bulling (Escala 5)",
+	            yaxis_title="Média de ter testemunhado bullying (Escala 5)",
 	            legend_title="Sexo e Cor da Pele",
 	            plot_bgcolor="#F9F9F9",
 	            bargap=0.15,
@@ -1909,7 +1909,7 @@ elif page == 'Escala 6':
 	st.subheader('Média de cada item da escala')
 
 
-	if st.checkbox ("Marque aqui para visualizar a média de cada item dos locais em que ocorreram o bulling", key="med_E6"):
+	if st.checkbox ("Marque aqui para visualizar a média de cada item dos locais em que ocorreram o bullying", key="med_E6"):
 		st.image ('q6.png')
 		st.markdown(f'**Média geral no ambiente escolar {med_e6:.3f}**')
 		st.write(f'1 = {med_e6_1:.3f} (Na classe)')
@@ -1926,7 +1926,7 @@ elif page == 'Escala 6':
 		st.write(f'8 = {med_e6_8:.3f} (Através da internet ou celular)')
 
 	st.divider()
-	st.subheader('Bulling sofrido no ambiente escolar, por cidade, sexo e cor da pele')   
+	st.subheader('Bullying sofrido no ambiente escolar, por cidade, sexo e cor da pele')   
 
 
 # Calcular média por cidade, sexo e cor da pele
@@ -1995,10 +1995,10 @@ elif page == 'Escala 6':
 	            color="Sexo_Cor",
 	            barmode="group",
 	            text=df_filtrado["esc6_loc_agr_esc"].round(2),
-	            title="Escala 6: Bulling sofrido no ambiente escolar, por cidade, sexo e cor da pele",
+	            title="Escala 6: Bullying sofrido no ambiente escolar, por cidade, sexo e cor da pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "esc6_loc_agr_esc": "Bulling sofrido no ambiente escolar",
+	                "esc6_loc_agr_esc": "Bullying sofrido no ambiente escolar",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -2007,7 +2007,7 @@ elif page == 'Escala 6':
 	            y=media_geral,
 	            line_dash="dot",
 	            line_color="red",
-	            annotation_text=f"Bulling sofrido no ambiente escolar: {media_geral:.3f}",
+	            annotation_text=f"Bullying sofrido no ambiente escolar: {media_geral:.3f}",
 	            annotation_position="top left"
 	        )
 
@@ -2062,7 +2062,7 @@ elif page == 'Escala 6':
 	                st.rerun()
 
 	st.divider()
-	st.subheader('Bulling sofrido nas imediações da escola, por cidade, sexo e cor da pele')   
+	st.subheader('Bullying sofrido nas imediações da escola, por cidade, sexo e cor da pele')   
 
 
 	# Calcular média por cidade, sexo e cor da pele
@@ -2131,10 +2131,10 @@ elif page == 'Escala 6':
 	            color="Sexo_Cor",
 	            barmode="group",
 	            text=df_filtradoi["esc6_loc_agr_imed"].round(2),
-	            title="Escala 6: Bulling sofrido nas imediações da escola, por cidade, sexo e cor da pele",
+	            title="Escala 6: Bullyng sofrido nas imediações da escola, por cidade, sexo e cor da pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "esc6_loc_agr_imed": "Bulling sofrido nas imediações da escola",
+	                "esc6_loc_agr_imed": "Bullying sofrido nas imediações da escola",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -2143,13 +2143,13 @@ elif page == 'Escala 6':
 	            y=media_gerali,
 	            line_dash="dot",
 	            line_color="red",
-	            annotation_text=f"Bulling sofrido nas imediações da escola: {media_gerali:.3f}",
+	            annotation_text=f"Bullying sofrido nas imediações da escola: {media_gerali:.3f}",
 	            annotation_position="top left"
 	        )
 
 	        fig_media_E6i.update_layout(
 	            xaxis_title="Cidade",
-	            yaxis_title="MBulling sofrido nas imediações da escola (Escala 6)",
+	            yaxis_title="MBullying sofrido nas imediações da escola (Escala 6)",
 	            legend_title="Sexo e Cor da Pele",
 	            plot_bgcolor="#F9F9F9",
 	            bargap=0.15,
@@ -2198,7 +2198,7 @@ elif page == 'Escala 6':
 	                st.rerun()
 
 	st.divider()
-	st.subheader('Bulling sofrido em ambientes online, por cidade, sexo e cor da pele')   
+	st.subheader('Bullying sofrido em ambientes online, por cidade, sexo e cor da pele')   
 
 
 # Calcular média por cidade, sexo e cor da pele
@@ -2253,7 +2253,7 @@ elif page == 'Escala 6':
 	].copy()
 
 	# Mostrar gráfico (opcional)
-	if st.checkbox("Marque aqui para visualizar o gráfico do bulling sofrido em ambientes online, por cidade, sexo e cor da pele", key="graf_E6o_imed"):
+	if st.checkbox("Marque aqui para visualizar o gráfico do bullying sofrido em ambientes online, por cidade, sexo e cor da pele", key="graf_E6o_imed"):
 	    if df_filtradoo.empty:
 	        st.warning("Nenhum dado disponível para os filtros selecionados.")
 	    else:
@@ -2267,10 +2267,10 @@ elif page == 'Escala 6':
 	            color="Sexo_Cor",
 	            barmode="group",
 	            text=df_filtradoo["esc6_loc_agr_internet"].round(2),
-	            title="Escala 6: Bulling sofrido nos ambientes online, por cidade, sexo e cor da pele",
+	            title="Escala 6: Bullying sofrido nos ambientes online, por cidade, sexo e cor da pele",
 	            labels={
 	                "Cidade": "Cidade",
-	                "esc6_loc_agr_internet": "Bulling sofrido nos ambientes online",
+	                "esc6_loc_agr_internet": "Bullying sofrido nos ambientes online",
 	                "Sexo_Cor": "Sexo e Cor da Pele"
 	            }
 	        )
@@ -2279,13 +2279,13 @@ elif page == 'Escala 6':
 	            y=media_geralo,
 	            line_dash="dot",
 	            line_color="red",
-	            annotation_text=f"Bulling sofrido nas imediações da escola: {media_geralo:.3f}",
+	            annotation_text=f"Bullying sofrido nas imediações da escola: {media_geralo:.3f}",
 	            annotation_position="top left"
 	        )
 
 	        fig_media_E6o.update_layout(
 	            xaxis_title="Cidade",
-	            yaxis_title="MBulling sofrido nas imediações da escola (Escala 6)",
+	            yaxis_title="MBullying sofrido nas imediações da escola (Escala 6)",
 	            legend_title="Sexo e Cor da Pele",
 	            plot_bgcolor="#F9F9F9",
 	            bargap=0.15,
@@ -3080,7 +3080,7 @@ elif page == 'Escala 8':
 
 
 elif page == 'Escala 9':
-	st.subheader('Inclusão da diversaidade na escola')
+	st.subheader('Inclusão da diversidade na escola')
 	dados = pd.read_csv('oppes_versao2.csv')
 	#dados = load_dados()
 
@@ -3828,9 +3828,9 @@ elif page == 'Modelos de regressão':
 	    'esc2_sit_alunos': 'Situações estressantes relacionadas aos colegas.',
 	    'esc2_sit_escola': 'Situações estressantes relacionadas ao ambiente escolar.',
 	    'esc3_4_conflitos': 'Ação dos professores e da escola frente aos conflitos.',
-	    'esc5_bull_alvo': 'Alvo bulling no ambiente escolar.',
-	    'esc5_bull_agente': 'Praticou bulling no ambiente escolar.',
-	    'esc5_bull_testem': 'Testemunhou bulling no ambiente escolar.',
+	    'esc5_bull_alvo': 'Alvo bullying no ambiente escolar.',
+	    'esc5_bull_agente': 'Praticou bullying no ambiente escolar.',
+	    'esc5_bull_testem': 'Testemunhou bullying no ambiente escolar.',
 	    'esc6_loc_agr_esc': 'Agressões sofridas no ambiente escolar.',
 	    'esc6_loc_agr_imed': 'Agressões sofridas nas imediações da escola.',
 	    'esc6_loc_agr_internet': 'Agressões sofridas na internet.',
