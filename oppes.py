@@ -27,7 +27,7 @@ st.header('Resultados do diagnóstico')
 
 st.sidebar.title ('Navegação')
 page = st.sidebar.selectbox('Selecione uma página:',
-['Geral', 'Escala 1', 'Escala 2', 'Escalas 3 e 4', 'Escala 5',  'Escala 6', 'Escala 7', 'Escala 8', 'Escala 9', 'Escala 10', 'Escala 11', 'Modelos de regressão', 'Dados Textuais'])
+['Geral', 'Escala 1', 'Escala 2', 'Escalas 3 e 4', 'Escala 5',  'Escala 6', 'Escala 7', 'Escala 8', 'Escala 9', 'Escala 10', 'Escala 11', 'Modelos de regressão', 'Dados Textuais', 'Itens isolados'])
 
 @st.cache_data
 def load_dados():
@@ -3595,207 +3595,7 @@ elif page == 'Escala 11':
 		st.write(f'5 = {med_e11_5:.3f} (Se eu pudesse viver a minha vida de novo eu não mudaria quase nada)')
 		
 
-	st.divider()
-	st.subheader('Média de satisfação com a vida, por cidade, sexo e cor da pele')   
-
-
-# Calcular média por cidade, sexo e cor da pele
-
-# Calcular média
-	media_E11_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc11_satisf_vida'].mean().reset_index()
-	media_E11_por_cidade_sexo['Sexo_Cor'] = media_E11_por_cidade_sexo['Sexo'] + " - " + media_E11_por_cidade_sexo['Cor_da_pele']
-
-	# Valores únicos
-	cidades = media_E11_por_cidade_sexo["Cidade"].unique()
-	sexos = media_E11_por_cidade_sexo["Sexo"].unique()
-	cores_pele = media_E11_por_cidade_sexo["Cor_da_pele"].unique()
-
-	# Inicializar session_state
-	if "cidade_selecionada" not in st.session_state:
-	    st.session_state["cidade_selecionada"] = list(cidades)
-	if "sexo_selecionado" not in st.session_state:
-	    st.session_state["sexo_selecionado"] = list(sexos)
-	if "cor_selecionada" not in st.session_state:
-	    st.session_state["cor_selecionada"] = list(cores_pele)
-
-	# Aplicar filtros baseados no estado
-	df_filtrado = media_E11_por_cidade_sexo[
-	    media_E11_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
-	    media_E11_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
-	    media_E11_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
-	].copy()
-	   
-
-	# 🧮 Agrupamento e preparação dos dados
-	media_E11_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['esc11_satisf_vida'].mean().reset_index()
-	media_E11_por_cidade_sexo['Sexo_Cor'] = media_E11_por_cidade_sexo['Sexo'] + " - " + media_E11_por_cidade_sexo['Cor_da_pele']
-
-	# Valores únicos
-	cidades = media_E11_por_cidade_sexo["Cidade"].unique()
-	sexos = media_E11_por_cidade_sexo["Sexo"].unique()
-	cores_pele = media_E11_por_cidade_sexo["Cor_da_pele"].unique()
-
-	# Inicializar session_state
-	if "cidade_selecionada" not in st.session_state:
-	    st.session_state["cidade_selecionada"] = list(cidades)
-	if "sexo_selecionado" not in st.session_state:
-	    st.session_state["sexo_selecionado"] = list(sexos)
-	if "cor_selecionada" not in st.session_state:
-	    st.session_state["cor_selecionada"] = list(cores_pele)
-
-	# Aplicar filtros
-	df_filtrado = media_E11_por_cidade_sexo[
-	    media_E11_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
-	    media_E11_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
-	    media_E11_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
-	].copy()
-
-	# Mostrar gráfico (opcional)
-	if st.checkbox("Marque aqui para visualizar o gráfico das médias de satisfação com a vida, por cidade, sexo e cor da pele", key="graf_E11_csc"):
-	    if df_filtrado.empty:
-	        st.warning("Nenhum dado disponível para os filtros selecionados.")
-	    else:
-	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
-	        media_geral = df_filtrado["esc11_satisf_vida"].mean()
-
-	        fig_media_E11 = px.bar(
-	            df_filtrado,
-	            x="Cidade",
-	            y="esc11_satisf_vida",
-	            color="Sexo_Cor",
-	            barmode="group",
-	            text=df_filtrado["esc11_satisf_vida"].round(2),
-	            title="Escala 10: Média de satisfação com a vida, por cidade, sexo e cor da pele",
-	            labels={
-	                "Cidade": "Cidade",
-	                "esc11_satisf_vida": "Média de satisfação com a vida",
-	                "Sexo_Cor": "Sexo e Cor da Pele"
-	            }
-	        )
-
-	        fig_media_E11.add_hline(
-	            y=media_geral,
-	            line_dash="dot",
-	            line_color="red",
-	            annotation_text=f"Média Geral da escala de satisfação com a vida : {media_geral:.3f}",
-	            annotation_position="top left"
-	        )
-
-	        fig_media_E11.update_layout(
-	            xaxis_title="Cidade",
-	            yaxis_title="Média de satisfação com a vida (Escala 11)",
-	            legend_title="Sexo e Cor da Pele",
-	            plot_bgcolor="#F9F9F9",
-	            bargap=0.15,
-	        )
-
-	        fig_media_E11.update_traces(
-	            textposition="outside",
-	            marker_line_width=0.5
-	        )
-
-	        st.plotly_chart(fig_media_E11, use_container_width=True)
-
-	        # 🔽 Filtros exibidos apenas após o gráfico
-	        with st.expander("Ajuste os filtros abaixo", expanded=True):
-	            nova_cidade = st.multiselect(
-	                "Selecione a(s) cidade(s):",
-	                cidades,
-	                default=st.session_state["cidade_selecionada"],
-	                key="cidade_final"
-	            )
-	            novo_sexo = st.multiselect(
-	                "Selecione o(s) sexo(s):",
-	                sexos,
-	                default=st.session_state["sexo_selecionado"],
-	                key="sexo_final"
-	            )
-	            nova_cor = st.multiselect(
-	                "Selecione a(s) cor(es) da pele:",
-	                cores_pele,
-	                default=st.session_state["cor_selecionada"],
-	                key="cor_final"
-	            )
-
-	            # Atualizar session_state e recarregar se necessário
-	            filtros_modificados = False
-	            if nova_cidade != st.session_state["cidade_selecionada"]:
-	                st.session_state["cidade_selecionada"] = nova_cidade
-	                filtros_modificados = True
-	            if novo_sexo != st.session_state["sexo_selecionado"]:
-	                st.session_state["sexo_selecionado"] = novo_sexo
-	                filtros_modificados = True
-	            if nova_cor != st.session_state["cor_selecionada"]:
-	                st.session_state["cor_selecionada"] = nova_cor
-	                filtros_modificados = True
-	            if filtros_modificados:
-	                st.rerun()
-
-	st.divider()
-	st.subheader('Diagrama de dispersão entre a variável idade, a escala selecionada e as variáveis cor da pele e o sexo do participante.')
-	
-
-	# === Carregamento e pré-processamento dos dados ===
-	dados = pd.read_csv('oppes_versao2.csv')
-	dados = dados.drop(['Cidade'], axis=1)
-
-	# Colunas numéricas de interesse (escalas)
-	colunas_escalas_E11 = [
-	    'esc11_satisf_vida', 'Escala_11_1', 'Escala_11_2',
-	    'Escala_11_3', 'Escala_11_4', 'Escala_11_5'
-	]
-	if st.checkbox ("Marque aqui para selecionar as variáveis e visualizar os resultados ", key="graf_reg_esc11"):
-		# === Interface de seleção ===
-		st.write('Use o filtro abaixo para selecionar as variáveis')
-		x_axis = 'Idade'
-		y_axis = st.selectbox('Selecione a variável a ser incluída no eixo Y', colunas_escalas_E11, index=0)
-
-		# Conversão e limpeza dos dados
-		dados[x_axis] = pd.to_numeric(dados[x_axis], errors='coerce')
-		dados[y_axis] = pd.to_numeric(dados[y_axis], errors='coerce')
-		dados = dados.dropna(subset=[x_axis, y_axis])
-		dados = dados[np.isfinite(dados[x_axis]) & np.isfinite(dados[y_axis])]
-
-		# Verificação de dados suficientes
-		if dados.empty:
-		    st.warning("Não há dados suficientes para realizar a regressão linear.")
-		    st.stop()
-
-		# === Cálculo da linha de regressão ===
-		m, b = np.polyfit(dados[x_axis], dados[y_axis], 1)
-		x_regressao = np.array(dados[x_axis])
-		y_regressao = m * x_regressao + b
-
-		# === Criação do gráfico ===
-		fig = px.scatter(
-		    dados, x=x_axis, y=y_axis,
-		    color='Cor_da_pele', symbol='Sexo',
-		    title='Gráfico de Dispersão com Linha de Regressão.'
-		)
-		fig.add_trace(go.Scatter(
-		    x=x_regressao, y=y_regressao,
-		    mode='lines', name='Linha de Regressão',
-		    line=dict(color='red', width=3)
-		))
-	
-
-		st.plotly_chart(fig)
-
-		# === Regressão linear com scikit-learn ===
-		X = dados[[x_axis]].values
-		y = dados[y_axis].values
-		model = LinearRegression()
-		model.fit(X, y)
-
-		# Resultados do modelo
-		coeficiente = model.coef_[0]
-		intercepto = model.intercept_
-		r2 = model.score(X, y)
-
-		# === Exibição dos resultados ===
-		st.write(f'**Coeficiente de regressão (inclinação):** {coeficiente:.3f}')
-		st.write(f'**Intercepto:** {intercepto:.3f}')
-		st.write(f'**Coeficiente de determinação (R²):** {r2:.3f}')
+	g
 
 
 #--------------modelos de regressão
@@ -3987,6 +3787,325 @@ elif page == 'Modelos de regressão':
 	    st.success("Não há evidência de heterocedasticidade (p > 0.05).")
 	else:
 	    st.error("Pode haver heterocedasticidade (p < 0.05).")
+
+
+# # ----------------------------Escala itens individuais-----------------------------------------------
+# # ----------------------------Escala 11-----------------------------------------------
+elif page == 'Itens isolados':
+	st.subheader('Análise gráfica dos itens isolados')
+	 
+#Calcular média por cidade, sexo e cor da pele
+
+# Calcular média
+	media_E10_1_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['Escala_10_1'].mean().reset_index()
+	media_E10_1_por_cidade_sexo['Sexo_Cor'] = media_E10_1_por_cidade_sexo['Sexo'] + " - " + media_E10_1_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E10_1_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E10_1_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E10_1_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros baseados no estado
+	df_filtrado = media_E10_1_por_cidade_sexo[
+	    media_E10_1_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E10_1_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E10_1_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+	   
+
+	# 🧮 Agrupamento e preparação dos dados
+	media_E10_1_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['Escala_10_1'].mean().reset_index()
+	media_E10_1_por_cidade_sexo['Sexo_Cor'] = media_E10_1_por_cidade_sexo['Sexo'] + " - " + media_E10_1_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media_E10_1_por_cidade_sexo["Cidade"].unique()
+	sexos = media_E10_1_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media_E10_1_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros
+	df_filtrado = media_E10_1_por_cidade_sexo[
+	    media_E10_1_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media_E10_1_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media_E10_1_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+
+	# Mostrar gráfico (opcional)
+	#if st.checkbox("Marque aqui para visualizar o gráfico das médias de inclusão da diversidade na escola, por cidade, sexo e cor da pele", key="graf_E9_csc"):
+	with st.expander("Análise da questão 1 da Escala 10: Pensamentos de acabar com a vida"):
+	    if df_filtrado.empty:
+	        st.warning("Nenhum dado disponível para os filtros selecionados.")
+	    else:
+	        df_filtrado = df_filtrado.copy()
+	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
+	        media_geral = df_filtrado["Escala_10_1"].mean()
+
+	        fig_media_E9 = px.bar(
+	            df_filtrado,
+	            x="Cidade",
+	            y="Escala_10_1",
+	            color="Sexo_Cor",
+	            barmode="group",
+	            text=df_filtrado["Escala_10_1"].round(2),
+	            title="Pensamentos de acabar com a vida, por cidade, sexo e cor",
+	            labels={
+	                "Cidade": "Cidade",
+	                "Escala_10_1": "Pensamentos de acabar com a vida",
+	                "Sexo_Cor": "Sexo e Cor da Pele"
+	            }
+	        )
+
+	        fig_media_E9.add_hline(
+	            y=media_geral,
+	            line_dash="dot",
+	            line_color="red",
+	            annotation_text=f"Média Geral: {media_geral:.3f}",
+	            annotation_position="top left"
+	        )
+
+	        fig_media_E9.update_layout(
+	            xaxis_title="Cidade",
+	            yaxis_title="Média (Escala 9)",
+	            legend_title="Sexo e Cor da Pele",
+	            plot_bgcolor="#F9F9F9",
+	            bargap=0.15,
+	        )
+
+	        fig_media_E9.update_traces(
+	            textposition="outside",
+	            marker_line_width=0.5
+	        )
+
+	        st.plotly_chart(fig_media_E9, use_container_width=True)
+
+	        # ✅ Toggle para mostrar filtros DENTRO do expander
+	        if st.toggle("Ajustar filtros da visualização"):
+	            with st.container():
+	                nova_cidade = st.multiselect(
+	                    "Selecione a(s) cidade(s):",
+	                    cidades,
+	                    default=st.session_state["cidade_selecionada"],
+	                    key="cidade_final"
+	                )
+	                novo_sexo = st.multiselect(
+	                    "Selecione o(s) sexo(s):",
+	                    sexos,
+	                    default=st.session_state["sexo_selecionado"],
+	                    key="sexo_final"
+	                )
+	                nova_cor = st.multiselect(
+	                    "Selecione a(s) cor(es) da pele:",
+	                    cores_pele,
+	                    default=st.session_state["cor_selecionada"],
+	                    key="cor_final"
+	                )
+
+	                filtros_modificados = False
+	                if nova_cidade != st.session_state["cidade_selecionada"]:
+	                    st.session_state["cidade_selecionada"] = nova_cidade
+	                    filtros_modificados = True
+	                if novo_sexo != st.session_state["sexo_selecionado"]:
+	                    st.session_state["sexo_selecionado"] = novo_sexo
+	                    filtros_modificados = True
+	                if nova_cor != st.session_state["cor_selecionada"]:
+	                    st.session_state["cor_selecionada"] = nova_cor
+	                    filtros_modificados = True
+	                if filtros_modificados:
+	                    st.rerun()
+#--------------
+#------------------ escala 1_9
+# Calcular média
+	media__1_9_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['Escala_1_9'].mean().reset_index()
+	media__1_9_por_cidade_sexo['Sexo_Cor'] = media__1_9_por_cidade_sexo['Sexo'] + " - " + media__1_9_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media__1_9_por_cidade_sexo["Cidade"].unique()
+	sexos = media__1_9_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media__1_9_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros baseados no estado
+	df_filtrado = media__1_9_por_cidade_sexo[
+	    media__1_9_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media__1_9_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media__1_9_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+	   
+
+	# 🧮 Agrupamento e preparação dos dados
+	media__1_9_por_cidade_sexo = dados.groupby(['Cidade', 'Sexo', 'Cor_da_pele'])['Escala_1_9'].mean().reset_index()
+	media__1_9_por_cidade_sexo['Sexo_Cor'] = media__1_9_por_cidade_sexo['Sexo'] + " - " + media__1_9_por_cidade_sexo['Cor_da_pele']
+
+	# Valores únicos
+	cidades = media__1_9_por_cidade_sexo["Cidade"].unique()
+	sexos = media__1_9_por_cidade_sexo["Sexo"].unique()
+	cores_pele = media__1_9_por_cidade_sexo["Cor_da_pele"].unique()
+
+	# Inicializar session_state
+	if "cidade_selecionada" not in st.session_state:
+	    st.session_state["cidade_selecionada"] = list(cidades)
+	if "sexo_selecionado" not in st.session_state:
+	    st.session_state["sexo_selecionado"] = list(sexos)
+	if "cor_selecionada" not in st.session_state:
+	    st.session_state["cor_selecionada"] = list(cores_pele)
+
+	# Aplicar filtros
+	df_filtrado = media__1_9_por_cidade_sexo[
+	    media__1_9_por_cidade_sexo["Cidade"].isin(st.session_state["cidade_selecionada"]) &
+	    media__1_9_por_cidade_sexo["Sexo"].isin(st.session_state["sexo_selecionado"]) &
+	    media__1_9_por_cidade_sexo["Cor_da_pele"].isin(st.session_state["cor_selecionada"])
+	].copy()
+
+	# Mostrar gráfico (opcional)
+	#if st.checkbox("Marque aqui para visualizar o gráfico das médias de inclusão da diversidade na escola, por cidade, sexo e cor da pele", key="graf_E9_csc"):
+	with st.expander("Análise da questão 9 da Escala 1: Se eu pudesse, mudaria de escola"):
+	    if df_filtrado.empty:
+	        st.warning("Nenhum dado disponível para os filtros selecionados.")
+	    else:
+	        df_filtrado = df_filtrado.copy()
+	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
+	        media_geral = df_filtrado["Escala_1_9"].mean()
+
+	        fig_media_E9 = px.bar(
+	            df_filtrado,
+	            x="Cidade",
+	            y="Escala_1_9",
+	            color="Sexo_Cor",
+	            barmode="group",
+	            text=df_filtrado["Escala_1_9"].round(2),
+	            title="Se eu pudesse, mudaria de escola, por cidade, sexo e cor",
+	            labels={
+	                "Cidade": "Cidade",
+	                "Escala_1_9": "Se eu pudesse, mudaria de escola",
+	                "Sexo_Cor": "Sexo e Cor da Pele"
+	            }
+	        )
+
+	        fig_media_E9.add_hline(
+	            y=media_geral,
+	            line_dash="dot",
+	            line_color="red",
+	            annotation_text=f"Média Geral: {media_geral:.3f}",
+	            annotation_position="top left"
+	        )
+
+	        fig_media_E9.update_layout(
+	            xaxis_title="Cidade",
+	            yaxis_title="Média (Escala 9)",
+	            legend_title="Sexo e Cor da Pele",
+	            plot_bgcolor="#F9F9F9",
+	            bargap=0.15,
+	        )
+
+	        fig_media_E9.update_traces(
+	            textposition="outside",
+	            marker_line_width=0.5
+	        )
+
+	        st.plotly_chart(fig_media_E9, use_container_width=True)
+
+	        # ✅ Toggle para mostrar filtros DENTRO do expander
+	        if st.toggle("Ajustar filtros da visualização", key="E1_9"):
+	            with st.container():
+	                nova_cidade = st.multiselect(
+	                    "Selecione a(s) cidade(s):",
+	                    cidades,
+	                    default=st.session_state["cidade_selecionada"],
+	                    key="cidade_final"
+	                )
+	                novo_sexo = st.multiselect(
+	                    "Selecione o(s) sexo(s):",
+	                    sexos,
+	                    default=st.session_state["sexo_selecionado"],
+	                    key="sexo_final"
+	                )
+	                nova_cor = st.multiselect(
+	                    "Selecione a(s) cor(es) da pele:",
+	                    cores_pele,
+	                    default=st.session_state["cor_selecionada"],
+	                    key="cor_final"
+	                )
+
+	                filtros_modificados = False
+	                if nova_cidade != st.session_state["cidade_selecionada"]:
+	                    st.session_state["cidade_selecionada"] = nova_cidade
+	                    filtros_modificados = True
+	                if novo_sexo != st.session_state["sexo_selecionado"]:
+	                    st.session_state["sexo_selecionado"] = novo_sexo
+	                    filtros_modificados = True
+	                if nova_cor != st.session_state["cor_selecionada"]:
+	                    st.session_state["cor_selecionada"] = nova_cor
+	                    filtros_modificados = True
+	                if filtros_modificados:
+	                    st.rerun()
+
+	df = pd.read_csv("oppes_versao2.csv")
+
+	# Definir as variáveis
+	variaveis = ['Escala_1_9', 'Escala_10_1']
+
+	st.subheader ('Análise das variâncias  dos itens isolados, por cidade')
+
+		# Loop para análise
+	for var in variaveis:
+	    with st.expander(f"🔍 Resultados relativos à  {var}", expanded=False):
+	        
+	        # Remover valores ausentes
+	        dados_validos = df[[var, 'Cidade']].dropna()
+
+	        # Checkbox e resultado da ANOVA
+	        if st.checkbox(f"Mostrar ANOVA - {var}", value=False):
+	            model = ols(f'{var} ~ C(Cidade)', data=dados_validos).fit()
+	            anova_table = sm.stats.anova_lm(model, typ=2)
+	            st.markdown("**Tabela ANOVA**")
+	            st.dataframe(anova_table)
+
+	        # Checkbox e resultado do teste de Tukey
+	        if st.checkbox(f"Mostrar Teste de Tukey - {var}", value=False):
+	            mc = MultiComparison(dados_validos[var], dados_validos['Cidade'])
+	            tukey_result = mc.tukeyhsd()
+	            tukey_df = pd.DataFrame(data=tukey_result._results_table.data[1:], 
+	                                    columns=tukey_result._results_table.data[0])
+	            st.markdown("**Teste Post Hoc (Tukey HSD)**")
+	            st.dataframe(tukey_df)
+
+	        # Checkbox e gráfico do teste de Tukey
+	        if st.checkbox(f"Mostrar Gráfico de Tukey - {var}", value=False):
+	            mc = MultiComparison(dados_validos[var], dados_validos['Cidade'])
+	            tukey_result = mc.tukeyhsd()
+	            fig = tukey_result.plot_simultaneous()
+	            st.pyplot(fig)
+
+	        # Checkbox e resultado de Games-Howell
+	        if st.checkbox(f"Mostrar Games-Howell - {var}", value=False):
+	            gh_result = pg.pairwise_gameshowell(dv=var, between='Cidade', data=dados_validos)
+	            st.markdown("**Teste Post Hoc (Games-Howell)**")
+	            st.dataframe(gh_result)
+
+
+
 
 
 else: 
