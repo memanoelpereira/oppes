@@ -4064,7 +4064,7 @@ elif page == 'Itens isolados':
 	df = pd.read_csv("oppes_versao2.csv")
 
 	# Definir as variáveis
-	variaveis = ['Escala_1_9', 'Escala_10_1']
+	variaveis = ['Escala_10_1', 'Escala_1_9']
 
 	st.subheader ('Análise das variâncias  dos itens isolados, por cidade')
 
