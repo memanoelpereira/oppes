@@ -445,15 +445,15 @@ elif page == 'Escala 1':
 	#dados = load_dados()
 
 	med_e1 = dados['esc1_Pertencimento'].mean()
-	med_e1_1 = dados['Escala_1_1'].mean()
-	med_e1_2 = dados['Escala_1_2'].mean()
-	med_e1_3 = dados['Escala_1_3'].mean()
-	med_e1_4 = dados['Escala_1_4'].mean()
-	med_e1_5 = dados['Escala_1_5'].mean()
-	med_e1_6 = dados['Escala_1_6'].mean()
-	med_e1_7 = dados['Escala_1_7'].mean()
-	med_e1_8 = dados['Escala_1_8'].mean()
-	med_e1_9 = dados['Escala_1_9'].mean()
+	med_e1_1 = dados['esc_1_1'].mean()
+	med_e1_2 = dados['esc_1_2'].mean()
+	med_e1_3 = dados['esc_1_3'].mean()
+	med_e1_4 = dados['esc_1_4'].mean()
+	med_e1_5 = dados['esc_1_5'].mean()
+	med_e1_6 = dados['esc_1_6'].mean()
+	med_e1_7 = dados['esc_1_7'].mean()
+	med_e1_8 = dados['esc_1_8'].mean()
+	med_e1_9 = dados['esc_1_9'].mean()
 
 
 	st.divider()
@@ -624,7 +624,7 @@ elif page == 'Escala 1':
 
 	# Colunas numéricas de interesse (escalas)
 	colunas_escalas_E1 = [
-	    'esc1_Pertencimento', 'esc1_1', 'esc_1_2',
+	    'esc1_Pertencimento', 'esc_1_1', 'esc_1_2',
 	    'esc_1_3', 'esc_1_4', 'esc_1_5',
 	    'esc_1_6', 'esc_1_7', 
 	    'esc_1_8', 'esc_1_9'
@@ -3855,7 +3855,7 @@ elif page == 'Itens isolados':
 	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
 	        media_geral = df_filtrado["Escala_10_1"].mean()
 
-	        fig_media_E9 = px.bar(
+	        fig_media_E9a = px.bar(
 	            df_filtrado,
 	            x="Cidade",
 	            y="Escala_10_1",
@@ -3870,7 +3870,7 @@ elif page == 'Itens isolados':
 	            }
 	        )
 
-	        fig_media_E9.add_hline(
+	        fig_media_E9a.add_hline(
 	            y=media_geral,
 	            line_dash="dot",
 	            line_color="red",
@@ -3878,7 +3878,7 @@ elif page == 'Itens isolados':
 	            annotation_position="top left"
 	        )
 
-	        fig_media_E9.update_layout(
+	        fig_media_E9a.update_layout(
 	            xaxis_title="Cidade",
 	            yaxis_title="Média (Escala 9)",
 	            legend_title="Sexo e Cor da Pele",
@@ -3886,12 +3886,12 @@ elif page == 'Itens isolados':
 	            bargap=0.15,
 	        )
 
-	        fig_media_E9.update_traces(
+	        fig_media_E9a.update_traces(
 	            textposition="outside",
 	            marker_line_width=0.5
 	        )
 
-	        st.plotly_chart(fig_media_E9, use_container_width=True)
+	        st.plotly_chart(fig_media_E9a, use_container_width=True)
 
 	        # ✅ Toggle para mostrar filtros DENTRO do expander
 	        if st.toggle("Ajustar filtros da visualização"):
@@ -3988,7 +3988,7 @@ elif page == 'Itens isolados':
 	        df_filtrado["Sexo_Cor"] = df_filtrado["Sexo"] + " - " + df_filtrado["Cor_da_pele"]
 	        media_geral = df_filtrado["Escala_1_9"].mean()
 
-	        fig_media_E9 = px.bar(
+	        fig_media_E9b = px.bar(
 	            df_filtrado,
 	            x="Cidade",
 	            y="Escala_1_9",
@@ -4003,7 +4003,7 @@ elif page == 'Itens isolados':
 	            }
 	        )
 
-	        fig_media_E9.add_hline(
+	        fig_media_E9b.add_hline(
 	            y=media_geral,
 	            line_dash="dot",
 	            line_color="red",
@@ -4011,7 +4011,7 @@ elif page == 'Itens isolados':
 	            annotation_position="top left"
 	        )
 
-	        fig_media_E9.update_layout(
+	        fig_media_E9b.update_layout(
 	            xaxis_title="Cidade",
 	            yaxis_title="Média (Escala 9)",
 	            legend_title="Sexo e Cor da Pele",
@@ -4019,12 +4019,12 @@ elif page == 'Itens isolados':
 	            bargap=0.15,
 	        )
 
-	        fig_media_E9.update_traces(
+	        fig_media_E9b.update_traces(
 	            textposition="outside",
 	            marker_line_width=0.5
 	        )
 
-	        st.plotly_chart(fig_media_E9, use_container_width=True)
+	        st.plotly_chart(fig_media_E9b, use_container_width=True)
 
 	        # ✅ Toggle para mostrar filtros DENTRO do expander
 	        if st.toggle("Ajustar filtros da visualização", key="E1_9"):
@@ -4104,10 +4104,383 @@ elif page == 'Itens isolados':
 	            st.markdown("**Teste Post Hoc (Games-Howell)**")
 	            st.dataframe(gh_result)
 
+#-------------regressão 10.1-------
+#-------------regressão 10.1-------
+
+	st.subheader ('Regressão linear dos itens isolados')
+
+	with st.expander("Regressão linear do item 10.1 Pensamentos de acabar com a vida"):
+	
+
+		st.subheader('Regressão Linear Múltipla do item 10.1 Pensamentos de acabar com a vida, com padronização, outliers e resultados brutos')
+		st.write("Selecione os preditores do modelo de regressão.")
+
+		# Carregamento dos dados
+		dados = pd.read_csv('oppes_versao2.csv')
+
+		# Seleção apenas das colunas desejadas
+		colunas_desejadas = ['esc1_Pertencimento', 'esc2_sit_alunos', 'esc2_sit_escola', 'esc3_4_conflitos', 'esc5_bull_alvo', 'esc5_bull_agente', 'esc5_bull_testem', 'esc6_loc_agr_esc', 'esc6_loc_agr_imed', 'esc6_loc_agr_internet', 'esc8_rel_intergrup', 'esc9_inc_diversid', 'esc11_satisf_vida', 'serie', 'idade', 'Freq_Redes', 'Tempo_Gasto_Redes']
+		colunas_disponiveis = [col for col in colunas_desejadas if col in dados.columns]
+
+		# Interface de seleção
+		variavel_dependente = ('Escala_10_1')
+		colunas_independentes = st.multiselect(
+		    "Selecione uma ou mais variáveis independentes (X):",
+		    [col for col in colunas_disponiveis if col != variavel_dependente],
+		    placeholder="Selecione uma ou mais opções"
+		)
+
+		# Descrições das variáveis
+		descricoes = {
+		    'esc1_Pertencimento': 'Sentimento de pertencimento ao ambiente escolar.',
+		    'esc2_sit_alunos': 'Situações estressantes relacionadas aos colegas.',
+		    'esc2_sit_escola': 'Situações estressantes relacionadas ao ambiente escolar.',
+		    'esc3_4_conflitos': 'Ação dos professores e da escola frente aos conflitos.',
+		    'esc5_bull_alvo': 'Alvo bullying no ambiente escolar.',
+		    'esc5_bull_agente': 'Praticou bullying no ambiente escolar.',
+		    'esc5_bull_testem': 'Testemunhou bullying no ambiente escolar.',
+		    'esc6_loc_agr_esc': 'Agressões sofridas no ambiente escolar.',
+		    'esc6_loc_agr_imed': 'Agressões sofridas nas imediações da escola.',
+		    'esc6_loc_agr_internet': 'Agressões sofridas na internet.',
+		    'esc7_soma_pert': 'Soma dos grupos de pertencimento.',
+		    'esc7_grup_estig': 'Proporção de grupos estigmatizados que pertence.',
+		    'esc8_rel_intergrup': 'Qualidade das relações entre os grupos no ambiente escolar.',
+		    'esc9_inc_diversid': 'Escole contribui para a inclusão da diversidade.',
+		    'esc11_satisf_vida': 'Medida de satisfação com a vida.',
+		    'serie': 'Série escolar em que se encontra.',
+		    'idade': 'Idade informada.',
+		    'Freq_Redes': 'Medida de frequência em redes sociais.',
+		    'Tempo_Gasto_Redes': 'Medida de tempo gasto em redes sociais em redes sociais (medida ordinal).'
+
+		}
 
 
 
 
+		# Mostrar descrição da variável dependente
+		st.markdown(f"**Descrição da variável dependente:** {descricoes.get(variavel_dependente, 'Pensamentos de acabar com a  vida.')}")
+
+		# Mostrar descrições das independentes
+		if colunas_independentes:
+		    st.markdown("**Descrição das variáveis independentes:**")
+		    for var in colunas_independentes:
+		        st.markdown(f"- {descricoes.get(var, 'Sem descrição disponível.')}")
+		else:
+		    st.warning("Selecione pelo menos uma variável independente.")
+		    st.stop()
+
+		# Remoção de NA
+		X = dados[colunas_independentes].apply(pd.to_numeric, errors='coerce')
+		y = dados[variavel_dependente].apply(pd.to_numeric, errors='coerce')
+		dados_validos = pd.concat([X, y], axis=1).dropna()
+
+		if dados_validos.empty:
+		    st.warning("Dados insuficientes após remoção de NAs.")
+		    st.stop()
+
+		# Padronização
+		scaler_X = StandardScaler()
+		scaler_y = StandardScaler()
+
+		X_pad = scaler_X.fit_transform(dados_validos[colunas_independentes])
+		y_pad = scaler_y.fit_transform(dados_validos[[variavel_dependente]])
+
+		# Remoção de outliers
+		z_scores = np.abs(np.concatenate([X_pad, y_pad], axis=1))
+		filtros = (z_scores < 3).all(axis=1)
+		X_filtrado = X_pad[filtros]
+		y_filtrado = y_pad[filtros].flatten()
+
+		# Salva os dados originais filtrados
+		dados_filtrados_originais = dados_validos.iloc[filtros]
+
+		if len(X_filtrado) < len(colunas_independentes) + 1:
+		    st.warning("Poucos dados após remoção de outliers.")
+		    st.stop()
+
+
+		st.divider()
+		# Regressão
+		modelo = LinearRegression()
+		modelo.fit(X_filtrado, y_filtrado)
+		y_prev_pad = modelo.predict(X_filtrado)
+		residuos_pad = y_filtrado - y_prev_pad
+		r2_pad = modelo.score(X_filtrado, y_filtrado)
+
+		# Inversão dos valores previstos para escala original
+		y_prev_orig = scaler_y.inverse_transform(y_prev_pad.reshape(-1, 1)).flatten()
+		y_real_orig = dados_filtrados_originais[variavel_dependente].values
+		residuos_orig = y_real_orig - y_prev_orig
+
+		# === Resultados Padronizados ===
+		st.markdown("### Resultados Padronizados")
+		st.write(f"**Intercepto (padronizado):** {modelo.intercept_:.3f}")
+		st.write(f"**R² (padronizado):** {r2_pad:.3f}")
+
+		st.markdown("**Coeficientes padronizados:**")
+		for var, coef in zip(colunas_independentes, modelo.coef_):
+		    st.write(f"- {var}: {coef:.3f}")
+
+		# === Resultados Originais ===
+		# st.markdown("### Resultados na Escala Original")
+		# st.write("Esses valores são obtidos ao reverter a padronização das previsões.")
+		# df_resultados = dados_filtrados_originais.copy()
+		# df_resultados['Previsto (original)'] = y_prev_orig
+		# df_resultados['Resíduo (original)'] = residuos_orig
+		# st.dataframe(df_resultados[[variavel_dependente, 'Previsto (original)', 'Resíduo (original)']].round(3))
+
+		# === Gráfico de Resíduos Originais ===
+		st.markdown("### Gráfico de Resíduos (Original)")
+		fig_residuos = px.scatter(
+		    x=y_prev_orig, y=residuos_orig,
+		    labels={'x': 'Previsto (Ŷ)', 'y': 'Resíduo'},
+		    title='Gráfico de Resíduos na Escala Original'
+		)
+		fig_residuos.add_hline(y=0, line_dash="dash", line_color="red")
+		st.plotly_chart(fig_residuos)
+
+		st.divider()
+
+
+		# ==========================
+		# 1. REGRESSÃO com STATSMODELS
+		# ==========================
+		X_orig = dados_filtrados_originais[colunas_independentes]
+		y_orig = dados_filtrados_originais[variavel_dependente]
+
+		# Adiciona constante para intercepto
+		X_sm = sm.add_constant(X_orig)
+		modelo_sm = sm.OLS(y_orig, X_sm).fit()
+
+		st.markdown("## 📊 Análise Estatística (Statsmodels)")
+		st.text(modelo_sm.summary())
+
+		# ==========================
+		# 2. MULTICOLINEARIDADE (VIF)
+		# ==========================
+		st.markdown("### 🔄 Multicolinearidade (VIF)")
+
+		# Calcular VIF para cada variável
+		vif_data = pd.DataFrame()
+		vif_data["Variável"] = X_sm.columns
+		vif_data["VIF"] = [variance_inflation_factor(X_sm.values, i) for i in range(X_sm.shape[1])]
+		st.dataframe(vif_data.round(2))
+
+		# ==========================
+		# 3. NORMALIDADE DOS RESÍDUOS
+		# ==========================
+		st.markdown("### 📈 Teste de Normalidade dos Resíduos (Shapiro-Wilk)")
+
+		residuos_statsmodels = modelo_sm.resid
+		stat, p_val_shapiro = shapiro(residuos_statsmodels)
+		st.write(f"**Estatística de Shapiro-Wilk:** {stat:.4f}")
+		st.write(f"**p-valor:** {p_val_shapiro:.4f}")
+		if p_val_shapiro > 0.05:
+		    st.success("Não há evidências de que os resíduos violem a normalidade (p > 0.05).")
+		else:
+		    st.error("Os resíduos podem não ser normalmente distribuídos (p < 0.05).")
+
+		# ==========================
+		# 4. HETEROCEDASTICIDADE (Breusch-Pagan)
+		# ==========================
+		st.markdown("### 📉 Teste de Heterocedasticidade (Breusch-Pagan)")
+
+		bp_test = het_breuschpagan(residuos_statsmodels, X_sm)
+		bp_labels = ['Estatística LM', 'p-valor LM', 'Estatística F', 'p-valor F']
+		for label, val in zip(bp_labels, bp_test):
+		    st.write(f"{label}: {val:.4f}")
+		if bp_test[1] > 0.05:
+		    st.success("Não há evidência de heterocedasticidade (p > 0.05).")
+		else:
+		    st.error("Pode haver heterocedasticidade (p < 0.05).")
+
+
+#-------------regressã 1.9-------
+
+	with st.expander("Regressão linear do item 1.9 Se eu pudesse, mudaria de escola"):
+		
+
+		st.subheader('Regressão Linear Múltipla do item 1.9 Se eu pudesse, mudaria de escola, com padronização, outliers e resultados brutos')
+		st.write("Selecione os preditores do modelo de regressão.")
+
+		# Carregamento dos dados
+		dados = pd.read_csv('oppes_versao2.csv')
+
+		# Seleção apenas das colunas desejadas
+		colunas_desejadas = ['esc2_sit_alunos', 'esc2_sit_escola', 'esc3_4_conflitos', 'esc5_bull_alvo', 'esc5_bull_agente', 'esc5_bull_testem', 'esc6_loc_agr_esc', 'esc6_loc_agr_imed', 'esc6_loc_agr_internet', 'esc8_rel_intergrup', 'esc9_inc_diversid', 'esc10_est_emoc_neg', 'esc11_satisf_vida', 'serie', 'idade', 'Freq_Redes', 'Tempo_Gasto_Redes']
+		colunas_disponiveis = [col for col in colunas_desejadas if col in dados.columns]
+
+		# Interface de seleção
+		variavel_dependente = ('Escala_1_9')
+		colunas_independentes = st.multiselect(
+		    "Selecione uma ou mais variáveis independentes (X):",
+		    [col for col in colunas_disponiveis if col != variavel_dependente],
+		    placeholder="Selecione uma ou mais opções"
+		)
+
+		# Descrições das variáveis
+		descricoes = {
+		    'esc2_sit_alunos': 'Situações estressantes relacionadas aos colegas.',
+		    'esc2_sit_escola': 'Situações estressantes relacionadas ao ambiente escolar.',
+		    'esc3_4_conflitos': 'Ação dos professores e da escola frente aos conflitos.',
+		    'esc5_bull_alvo': 'Alvo bullying no ambiente escolar.',
+		    'esc5_bull_agente': 'Praticou bullying no ambiente escolar.',
+		    'esc5_bull_testem': 'Testemunhou bullying no ambiente escolar.',
+		    'esc6_loc_agr_esc': 'Agressões sofridas no ambiente escolar.',
+		    'esc6_loc_agr_imed': 'Agressões sofridas nas imediações da escola.',
+		    'esc6_loc_agr_internet': 'Agressões sofridas na internet.',
+		    'esc7_soma_pert': 'Soma dos grupos de pertencimento.',
+		    'esc7_grup_estig': 'Proporção de grupos estigmatizados que pertence.',
+		    'esc8_rel_intergrup': 'Qualidade das relações entre os grupos no ambiente escolar.',
+		    'esc9_inc_diversid': 'A escola contribui para a inclusão da diversidade.',
+		    'esc10_est_emoc_neg': 'Escala de emoções negativas.',
+		    'esc11_satisf_vida': 'Medida de satisfação com a vida.',
+		    'serie': 'Série escolar em que se encontra.',
+		    'idade': 'Idade informada.',
+		    'Freq_Redes': 'Medida de frequência em redes sociais.',
+		    'Tempo_Gasto_Redes': 'Medida de tempo gasto em redes sociais em redes sociais (medida ordinal).'
+
+		}
+
+
+
+
+		# Mostrar descrição da variável dependente
+		st.markdown(f"**Descrição da variável dependente:** {descricoes.get(variavel_dependente, 'Se pudesse, sairia da escola.')}")
+
+		# Mostrar descrições das independentes
+		if colunas_independentes:
+		    st.markdown("**Descrição das variáveis independentes:**")
+		    for var in colunas_independentes:
+		        st.markdown(f"- {descricoes.get(var, 'Sem descrição disponível.')}")
+		else:
+		    st.warning("Selecione pelo menos uma variável independente.")
+		    st.stop()
+
+		# Remoção de NA
+		X = dados[colunas_independentes].apply(pd.to_numeric, errors='coerce')
+		y = dados[variavel_dependente].apply(pd.to_numeric, errors='coerce')
+		dados_validos = pd.concat([X, y], axis=1).dropna()
+
+		if dados_validos.empty:
+		    st.warning("Dados insuficientes após remoção de NAs.")
+		    st.stop()
+
+		# Padronização
+		scaler_X = StandardScaler()
+		scaler_y = StandardScaler()
+
+		X_pad = scaler_X.fit_transform(dados_validos[colunas_independentes])
+		y_pad = scaler_y.fit_transform(dados_validos[[variavel_dependente]])
+
+		# Remoção de outliers
+		z_scores = np.abs(np.concatenate([X_pad, y_pad], axis=1))
+		filtros = (z_scores < 3).all(axis=1)
+		X_filtrado = X_pad[filtros]
+		y_filtrado = y_pad[filtros].flatten()
+
+		# Salva os dados originais filtrados
+		dados_filtrados_originais = dados_validos.iloc[filtros]
+
+		if len(X_filtrado) < len(colunas_independentes) + 1:
+		    st.warning("Poucos dados após remoção de outliers.")
+		    st.stop()
+
+
+		st.divider()
+		# Regressão
+		modelo = LinearRegression()
+		modelo.fit(X_filtrado, y_filtrado)
+		y_prev_pad = modelo.predict(X_filtrado)
+		residuos_pad = y_filtrado - y_prev_pad
+		r2_pad = modelo.score(X_filtrado, y_filtrado)
+
+		# Inversão dos valores previstos para escala original
+		y_prev_orig = scaler_y.inverse_transform(y_prev_pad.reshape(-1, 1)).flatten()
+		y_real_orig = dados_filtrados_originais[variavel_dependente].values
+		residuos_orig = y_real_orig - y_prev_orig
+
+		# === Resultados Padronizados ===
+		st.markdown("### Resultados Padronizados")
+		st.write(f"**Intercepto (padronizado):** {modelo.intercept_:.3f}")
+		st.write(f"**R² (padronizado):** {r2_pad:.3f}")
+
+		st.markdown("**Coeficientes padronizados:**")
+		for var, coef in zip(colunas_independentes, modelo.coef_):
+		    st.write(f"- {var}: {coef:.3f}")
+
+		# === Resultados Originais ===
+		# st.markdown("### Resultados na Escala Original")
+		# st.write("Esses valores são obtidos ao reverter a padronização das previsões.")
+		# df_resultados = dados_filtrados_originais.copy()
+		# df_resultados['Previsto (original)'] = y_prev_orig
+		# df_resultados['Resíduo (original)'] = residuos_orig
+		# st.dataframe(df_resultados[[variavel_dependente, 'Previsto (original)', 'Resíduo (original)']].round(3))
+
+		# === Gráfico de Resíduos Originais ===
+		st.markdown("### Gráfico de Resíduos (Original)")
+		fig_residuos = px.scatter(
+		    x=y_prev_orig, y=residuos_orig,
+		    labels={'x': 'Previsto (Ŷ)', 'y': 'Resíduo'},
+		    title='Gráfico de Resíduos na Escala Original'
+		)
+		fig_residuos.add_hline(y=0, line_dash="dash", line_color="red")
+		st.plotly_chart(fig_residuos)
+
+		st.divider()
+
+
+		# ==========================
+		# 1. REGRESSÃO com STATSMODELS
+		# ==========================
+		X_orig = dados_filtrados_originais[colunas_independentes]
+		y_orig = dados_filtrados_originais[variavel_dependente]
+
+		# Adiciona constante para intercepto
+		X_sm = sm.add_constant(X_orig)
+		modelo_sm = sm.OLS(y_orig, X_sm).fit()
+
+		st.markdown("## 📊 Análise Estatística (Statsmodels)")
+		st.text(modelo_sm.summary())
+
+		# ==========================
+		# 2. MULTICOLINEARIDADE (VIF)
+		# ==========================
+		st.markdown("### 🔄 Multicolinearidade (VIF)")
+
+		# Calcular VIF para cada variável
+		vif_data = pd.DataFrame()
+		vif_data["Variável"] = X_sm.columns
+		vif_data["VIF"] = [variance_inflation_factor(X_sm.values, i) for i in range(X_sm.shape[1])]
+		st.dataframe(vif_data.round(2))
+
+		# ==========================
+		# 3. NORMALIDADE DOS RESÍDUOS
+		# ==========================
+		st.markdown("### 📈 Teste de Normalidade dos Resíduos (Shapiro-Wilk)")
+
+		residuos_statsmodels = modelo_sm.resid
+		stat, p_val_shapiro = shapiro(residuos_statsmodels)
+		st.write(f"**Estatística de Shapiro-Wilk:** {stat:.4f}")
+		st.write(f"**p-valor:** {p_val_shapiro:.4f}")
+		if p_val_shapiro > 0.05:
+		    st.success("Não há evidências de que os resíduos violem a normalidade (p > 0.05).")
+		else:
+		    st.error("Os resíduos podem não ser normalmente distribuídos (p < 0.05).")
+
+		# ==========================
+		# 4. HETEROCEDASTICIDADE (Breusch-Pagan)
+		# ==========================
+		st.markdown("### 📉 Teste de Heterocedasticidade (Breusch-Pagan)")
+
+		bp_test = het_breuschpagan(residuos_statsmodels, X_sm)
+		bp_labels = ['Estatística LM', 'p-valor LM', 'Estatística F', 'p-valor F']
+		for label, val in zip(bp_labels, bp_test):
+		    st.write(f"{label}: {val:.4f}")
+		if bp_test[1] > 0.05:
+		    st.success("Não há evidência de heterocedasticidade (p > 0.05).")
+		else:
+		    st.error("Pode haver heterocedasticidade (p < 0.05).")
 else: 
 	st.subheader('Dados Textuais')
 
